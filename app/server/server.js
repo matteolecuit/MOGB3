@@ -10,8 +10,13 @@ var io = require('socket.io')(http);
 
 var util = require('./lib/util');
 var api = require('./lib/api');
+var User = require('./lib/user');
+var Room = require('./lib/room');
 
 app.use(express.static(__dirname + '/../client'));
+
+var users = new Map();
+var rooms = new Map();
 
 io.on('connection', socket => {
     console.log('Connection : \033[32m' + socket.id + '\033[0m');

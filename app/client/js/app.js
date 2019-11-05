@@ -15,7 +15,7 @@ class Application {
                 this.socket.close();
                 alert("Disconnected");
             });
-            
+
             // this.keyboardListener.listen(this.socket);
         }
 
