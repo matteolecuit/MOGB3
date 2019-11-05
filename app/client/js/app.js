@@ -2,6 +2,8 @@ class Application {
     constructor() {
         this.socket = io();
 
+        this.keyboardListener = new KeyboardListener();
+
         this.setupSocket = () => {
 
             this.socket.on("connect_failed", () => {
@@ -13,6 +15,8 @@ class Application {
                 this.socket.close();
                 alert("Disconnected");
             });
+            
+            // this.keyboardListener.listen(this.socket);
         }
 
         this.init = () => {
