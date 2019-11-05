@@ -8,6 +8,7 @@ const app = express();
 const http = require('http').Server(app);
 var io = require('socket.io')(http);
 
+var util = require('./lib/util');
 var api = require('./lib/api');
 
 app.use(express.static(__dirname + '/../client'));
