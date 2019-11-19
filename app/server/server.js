@@ -212,7 +212,7 @@ io.on('connection', socket => {
     });
 
     socket.on('requestUpdateUser', user => {
-        api.updateUserPersonalInfos(user.id, user.newname, user.newpassword);
+        api.updateUserPersonalInfos(user.id, user.newname, user.newpassword, user.newPfp);
         socket.emit('profilePage', api.getUser(user.id));
     });
 

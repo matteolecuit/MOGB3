@@ -4,6 +4,7 @@ var database = {
             id:'id0',
             name: 'admin',
             password: 'password',
+            pfp:0,
             playCount:0,
             winCount:0,
             experience: 0,
@@ -13,6 +14,7 @@ var database = {
             id:'id1',
             name: 'John',
             password: 'password',
+            pfp:0,
             playCount:7,
             winCount:5,
             experience: 0,
@@ -22,6 +24,7 @@ var database = {
             id:'id2',
             name: 'Adrien',
             password: 'password',
+            pfp:0,
             playCount:12,
             winCount:5,
             experience: 0,
@@ -60,6 +63,7 @@ module.exports = {
             id: 'id' + database.length,
             name: username,
             password: password,
+            pfp:0,
             playCount:0,
             winCount:0,
             experience: 0,
@@ -75,7 +79,7 @@ module.exports = {
             return {
                 id: result.id,
                 name: result.name,
-                profilePicture: 'url(../img/profile-admin.png)'
+                pfp: result.pfp
             };
         }
         else return null;
@@ -83,11 +87,12 @@ module.exports = {
     getUser: id => {
         return database.users.find(user => user.id === id) || null;
     },
-    updateUserPersonalInfos: (id, newName, newPassword) => {
+    updateUserPersonalInfos: (id, newName, newPassword, newPfp) => {
         var user = database.users.find(user => user.id === id);
         if (user) {
             if (newName && !database.users.find(user => user.name === newName)) user.name = newName;
             if (newPassword) user.password = newPassword;
+            if (newPfp || newPfp === 0) user.pfp = newPfp;
         }
     },
     updateUserGameInfos: (id, newPlayCount, newWinCount, newExperience, newScore) => {

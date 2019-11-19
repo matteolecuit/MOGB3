@@ -31,6 +31,7 @@ class Application {
             });
         
             this.socket.on('profilePage', user => {
+                this.display.user = user;
                 this.display.showProfileScreen(user);
             });
 

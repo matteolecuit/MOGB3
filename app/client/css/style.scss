@@ -19,6 +19,26 @@ html {
         font-family: sans-serif;
         background-color: $color-primary;
 
+        .notif {
+            position: absolute;
+            top: 64px;
+            left: 0;
+            padding: 8px 16px;
+            background: #fff;
+            color: #000;
+            z-index: 999;
+        }
+
+        .notif-info {
+            background: #080;
+            color: #fff;
+        }
+
+        .notif-error {
+            background: #800;
+            color: #fff;
+        }
+
         header {
             width: 100%;
             position: fixed;
@@ -35,7 +55,6 @@ html {
                 border: none;
                 background: $color-black;
                 background-position: center;
-                background-size: cover;
             }
 
             #profilRound:hover {
@@ -110,6 +129,9 @@ html {
                 #profileInfos {
                     width: 512px;
                     margin: 32px 0 64px 0;
+
+                    background-color: $color-bg-primary;
+                    border: 1px solid $color-secondary;
                     
                     p {
                         text-align: center;
@@ -122,15 +144,20 @@ html {
 
                 #profileRight {
                     width: 256px;
-
-                    input {
-                        width: 256px;
-                        padding: 0;
-                    }
+                    height: 256px;
+                    display: flex;
+                    flex-wrap: wrap;
 
                     img {
-                        width: 256px;
-                        height: 256px;
+                        width: 64px;
+                        height: 64px;
+                        margin: 0;
+                        cursor: pointer;
+                    }
+                    
+                    .imgSelected {
+                        box-shadow: 0px 0px 8px 4px $color-black;
+                        z-index: 2;
                     }
                 }
             }

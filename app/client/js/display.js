@@ -10,6 +10,19 @@ class Display {
         // Header
         //
 
+        this.sendNotification = (type, text) => {
+            var notification = document.createElement("p");
+            notification.className = 'notif notif-' + type;
+            notification.innerHTML = text;
+
+            document.body.appendChild(notification);
+
+            setTimeout(() => {
+                var notif = document.getElementsByClassName('notif');
+                if (notif.length > 0) notif[0].remove();
+            }, 3000);
+        }
+
         this.resetScreen = () => {
             document.body.innerHTML = "";
 
@@ -46,7 +59,7 @@ class Display {
             document.body.appendChild(header);
 
             if (this.user) {
-                profilRound.style.backgroundImage = this.user.profilePicture;
+                profilRound.style.backgroundImage = 'url(../img/pfp' + this.user.pfp + '.png)';
                 profilRound.onclick = () => this.socket.emit('requestProfilePage', this.user.id);
 
                 var logOutBtn = document.createElement("button");
@@ -58,7 +71,7 @@ class Display {
                 header.appendChild(logOutBtn);
 
             } else {
-                profilRound.style.backgroundImage = 'url(../img/profile-default.png)';
+                profilRound.style.backgroundImage = 'url(../img/pfp0.png)';
                 profilRound.onclick = () => this.socket.emit('requestAuth');
 
                 var authButton = document.createElement("button");
@@ -85,6 +98,12 @@ class Display {
                     password: password
                 });
             }
+            else if (!name || name.length <= 0 || name.length >= 15) {
+                this.sendNotification('error', 'ERROR : incorrect username');
+            }
+            else if (!password || password.length <= 0) {
+                this.sendNotification('error', 'ERROR : incorrect password');
+            }
         }
 
         this.register = () => {
@@ -98,6 +117,15 @@ class Display {
                     name: name,
                     password: password
                 });
+            }
+            else if (!name || name.length <= 0 || name.length >= 15) {
+                this.sendNotification('error', 'ERROR : incorrect username');
+            }
+            else if (!password || password.length <= 0) {
+                this.sendNotification('error', 'ERROR : incorrect password');
+            }
+            else if (password !== confirmPassword) {
+                this.sendNotification('error', 'ERROR : confirmation password does not match');
             }
         }
 
@@ -182,18 +210,28 @@ class Display {
         // Pofile
         //
 
-        this.updateUser = user => {
+        this.updateUser = (user, selectedImg) => {
             var newname = document.getElementById('nameInput').value || user.name;
             var newpassword = document.getElementById('passwordInput').value;
             var confirmPassword = document.getElementById('confirmPasswordInput').value;
 
             if ((!newname || newname && newname.length > 0 && newname.length < 15) && ((!newpassword && !confirmPassword) || (newpassword && newpassword.length > 0 &&
-                confirmPassword && confirmPassword.length > 0 && newpassword === confirmPassword))) {
+                    confirmPassword && confirmPassword.length > 0 && newpassword === confirmPassword))) {
                 this.socket.emit('requestUpdateUser', {
                     id: user.id,
                     newname: newname,
-                    newpassword: newpassword
+                    newpassword: newpassword,
+                    newPfp: selectedImg
                 });
+            }
+            else if (newname && (name.length <= 0 || name.length >= 15)) {
+                this.sendNotification('error', 'ERROR : incorrect new username');
+            }
+            else if (newpassword && password.length <= 0) {
+                this.sendNotification('error', 'ERROR : incorrect new password');
+            }
+            else if (newpassword !== confirmPassword) {
+                this.sendNotification('error', 'ERROR : confirmation password does not match');
             }
         }
 
@@ -234,41 +272,46 @@ class Display {
 
             var profileRight = document.createElement("div");
             profileRight.id = "profileRight";
-            
-            var profileImage = document.createElement("img");
-            profileImage.id = 'profileImage';
-            profileImage.src = "../img/profile-admin.png";
-            profileImage.draggable = false;
-            
-            var profileImageInput = document.createElement("input");
-            profileImageInput.id = "profileImageInput";
-            profileImageInput.type = "file";
-            profileImageInput.accept = "image/png, image/jpeg";
+
+            var selectedImg = null;
+            for (let i = 0; i < 16; i++) {
+                var profileImage = document.createElement("img");
+                profileImage.id = 'pfp' + i;
+                profileImage.src = "../img/pfp" + i + ".png";
+                profileImage.draggable = false;
+                profileImage.onclick = () => {
+                    Array.from(document.getElementsByClassName("imgSelected")).forEach(item => item.classList.remove("imgSelected"));
+                    document.getElementById('pfp' + i).className = 'imgSelected';
+                    selectedImg = i;
+                }
+
+                profileRight.appendChild(profileImage);
+            }
 
             var nameInput = document.createElement("input");
             nameInput.id = "nameInput";
             nameInput.type = "text";
             nameInput.placeholder = "New Username";
             nameInput.maxLength = 15;
-            
+
             var passwordInput = document.createElement("input");
             passwordInput.id = "passwordInput";
             passwordInput.type = "password";
             passwordInput.placeholder = "New Password";
             passwordInput.maxLength = 256;
             passwordInput.autocomplete = "new-password";
-            
+
             var confirmPasswordInput = document.createElement("input");
             confirmPasswordInput.id = "confirmPasswordInput";
             confirmPasswordInput.type = "password";
             confirmPasswordInput.placeholder = "Confirm Password";
             confirmPasswordInput.maxLength = 256;
             confirmPasswordInput.autocomplete = "new-password";
-            
+
             var updateUserBtn = document.createElement("button");
             updateUserBtn.id = "updateUserBtn";
             updateUserBtn.innerHTML = "Update Profile";
-            updateUserBtn.onclick = () => this.updateUser(user);
+            updateUserBtn.onclick = () => this.updateUser(user, selectedImg);
 
             title.appendChild(logoImg);
             container.appendChild(title);
@@ -278,8 +321,6 @@ class Display {
             profileLeft.appendChild(passwordInput);
             profileLeft.appendChild(confirmPasswordInput);
             profileContainer.appendChild(profileLeft);
-            profileRight.appendChild(profileImage);
-            profileRight.appendChild(profileImageInput);
             profileContainer.appendChild(profileRight);
             container.appendChild(profileContainer);
             container.appendChild(updateUserBtn);
@@ -341,6 +382,9 @@ class Display {
                 this.nickname = name;
                 this.socket.emit('join', name);
                 this.getRoomList(this.socket);
+            }
+            else {
+                this.sendNotification('error', 'ERROR : incorrect nickname');
             }
         }
 
@@ -408,6 +452,9 @@ class Display {
         this.joinRoom = name => {
             this.selectedRoom = null;
             if (name) this.socket.emit('requestJoinRoom', name);
+            else {
+                this.sendNotification('error', 'ERROR : incorrect room name');
+            }
         }
 
         this.showRoomList = roomList => {
@@ -514,6 +561,9 @@ class Display {
                 this.socket.emit('changeNick', name);
                 this.getRoomList(this.socket);
             }
+            else {
+                this.sendNotification('error', 'ERROR : incorrect nickname');
+            }
         }
 
         this.showChangeNick = () => {
@@ -566,6 +616,9 @@ class Display {
             this.selectedRoom = null;
             var name = document.getElementById('roomNameInput').value;
             if (name && name.length > 0 && name.length <= 35) this.socket.emit('requestCreateRoom', name);
+            else {
+                this.sendNotification('error', 'ERROR : incorrect room name');
+            }
         }
 
         this.showCreateRoom = () => {
