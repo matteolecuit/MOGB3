@@ -211,6 +211,11 @@ io.on('connection', socket => {
         socket.emit('logIn', api.logIn(user.name, user.password));
     });
 
+    socket.on('requestUpdateUser', user => {
+        api.updateUserPersonalInfos(user.id, user.newname, user.newpassword);
+        socket.emit('profilePage', api.getUser(user.id));
+    });
+
     socket.on('requestLogOut', () => {
         updateLeavingUser();
         socket.emit('logOut');

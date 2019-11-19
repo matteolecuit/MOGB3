@@ -86,8 +86,8 @@ module.exports = {
     updateUserPersonalInfos: (id, newName, newPassword) => {
         var user = database.users.find(user => user.id === id);
         if (user) {
-            user.name = newName;
-            user.password = newPassword;
+            if (newName && !database.users.find(user => user.name === newName)) user.name = newName;
+            if (newPassword) user.password = newPassword;
         }
     },
     updateUserGameInfos: (id, newPlayCount, newWinCount, newExperience, newScore) => {

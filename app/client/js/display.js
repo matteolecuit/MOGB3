@@ -182,13 +182,28 @@ class Display {
         // Pofile
         //
 
+        this.updateUser = user => {
+            var newname = document.getElementById('nameInput').value || user.name;
+            var newpassword = document.getElementById('passwordInput').value;
+            var confirmPassword = document.getElementById('confirmPasswordInput').value;
+
+            if ((!newname || newname && newname.length > 0 && newname.length < 15) && ((!newpassword && !confirmPassword) || (newpassword && newpassword.length > 0 &&
+                confirmPassword && confirmPassword.length > 0 && newpassword === confirmPassword))) {
+                this.socket.emit('requestUpdateUser', {
+                    id: user.id,
+                    newname: newname,
+                    newpassword: newpassword
+                });
+            }
+        }
+
         this.showProfileScreen = user => {
             this.resetScreen();
             document.getElementById("profilRound").className = 'headerSelected';
 
             var container = document.createElement("div");
             container.id = "container";
-            container.className = 'column';
+            container.className = 'column heightMax';
 
             var title = document.createElement("p");
             title.id = "title";
@@ -202,9 +217,72 @@ class Display {
             subtitle.id = "subtitle";
             subtitle.innerHTML = "Everything about you in MOGB3.";
 
+            var profileContainer = document.createElement("div");
+            profileContainer.id = "profileContainer";
+
+            var profileInfos = document.createElement("p");
+            profileInfos.id = "profileInfos";
+            profileInfos.innerHTML =
+                "<p>Username : " + user.name + "</p>" +
+                "<p>PlayCount : " + user.playCount + "</p>" +
+                "<p>WinCount : " + user.winCount + "</p>" +
+                "<p>Experience : " + user.experience + "</p>" +
+                "<p>Score : " + user.score + "</p>";
+
+            var profileLeft = document.createElement("div");
+            profileLeft.id = "profileLeft";
+
+            var profileRight = document.createElement("div");
+            profileRight.id = "profileRight";
+            
+            var profileImage = document.createElement("img");
+            profileImage.id = 'profileImage';
+            profileImage.src = "../img/profile-admin.png";
+            profileImage.draggable = false;
+            
+            var profileImageInput = document.createElement("input");
+            profileImageInput.id = "profileImageInput";
+            profileImageInput.type = "file";
+            profileImageInput.accept = "image/png, image/jpeg";
+
+            var nameInput = document.createElement("input");
+            nameInput.id = "nameInput";
+            nameInput.type = "text";
+            nameInput.placeholder = "New Username";
+            nameInput.maxLength = 15;
+            
+            var passwordInput = document.createElement("input");
+            passwordInput.id = "passwordInput";
+            passwordInput.type = "password";
+            passwordInput.placeholder = "New Password";
+            passwordInput.maxLength = 256;
+            passwordInput.autocomplete = "new-password";
+            
+            var confirmPasswordInput = document.createElement("input");
+            confirmPasswordInput.id = "confirmPasswordInput";
+            confirmPasswordInput.type = "password";
+            confirmPasswordInput.placeholder = "Confirm Password";
+            confirmPasswordInput.maxLength = 256;
+            confirmPasswordInput.autocomplete = "new-password";
+            
+            var updateUserBtn = document.createElement("button");
+            updateUserBtn.id = "updateUserBtn";
+            updateUserBtn.innerHTML = "Update Profile";
+            updateUserBtn.onclick = () => this.updateUser(user);
+
             title.appendChild(logoImg);
             container.appendChild(title);
             container.appendChild(subtitle);
+            profileContainer.appendChild(profileInfos);
+            profileLeft.appendChild(nameInput);
+            profileLeft.appendChild(passwordInput);
+            profileLeft.appendChild(confirmPasswordInput);
+            profileContainer.appendChild(profileLeft);
+            profileRight.appendChild(profileImage);
+            profileRight.appendChild(profileImageInput);
+            profileContainer.appendChild(profileRight);
+            container.appendChild(profileContainer);
+            container.appendChild(updateUserBtn);
             document.body.appendChild(container);
         }
 
@@ -389,10 +467,6 @@ class Display {
             settingsBtn.innerHTML = "Settings";
             // settingsBtn.onclick = () => this.showSettings();
 
-            var ornementImg = document.createElement("img");
-            ornementImg.id = 'ornementImg';
-            ornementImg.src = "../img/ornement.png";
-
             roomsTableTheadTr.appendChild(roomsTableTheadTrTh1);
             roomsTableTheadTr.appendChild(roomsTableTheadTrTh2);
             roomsTableTheadTr.appendChild(roomsTableTheadTrTh3);
@@ -405,7 +479,6 @@ class Display {
             roomsOptions.appendChild(createRoomBtn);
             roomsOptions.appendChild(changeNickBtn);
             roomsOptions.appendChild(settingsBtn);
-            // roomsOptions.appendChild(ornementImg);
             roomsMenu.appendChild(roomsTable);
             roomsMenu.appendChild(roomsOptions);
             document.body.appendChild(roomsMenu);
