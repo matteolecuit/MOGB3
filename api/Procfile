@@ -1,0 +1,2 @@
+web: ./target/release/MOGB3
+release: ./target/release/diesel migration run
