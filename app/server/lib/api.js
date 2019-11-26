@@ -1,38 +1,36 @@
 var database = {
-    users: [
-        {
-            id:'id0',
+    users: [{
+            id: 'id0',
             name: 'admin',
             password: 'password',
-            pfp:0,
-            playCount:0,
-            winCount:0,
+            pfp: 0,
+            playCount: 0,
+            winCount: 0,
             experience: 0,
-            score:0,
+            score: 0,
         },
         {
-            id:'id1',
+            id: 'id1',
             name: 'John',
             password: 'password',
-            pfp:0,
-            playCount:7,
-            winCount:5,
+            pfp: 0,
+            playCount: 7,
+            winCount: 5,
             experience: 0,
-            score:10,
+            score: 10,
         },
         {
-            id:'id2',
+            id: 'id2',
             name: 'Adrien',
             password: 'password',
-            pfp:0,
-            playCount:12,
-            winCount:5,
+            pfp: 0,
+            playCount: 12,
+            winCount: 5,
             experience: 0,
-            score:7,
+            score: 7,
         }
     ],
-    news: [
-        {
+    news: [{
             title: 'Wow ! A title !',
             content: 'Wait... What is that ? Content !?',
             date: 'October 20, 2019'
@@ -59,16 +57,21 @@ var database = {
 
 module.exports = {
     register: (username, password) => {
-        database.users.push({
-            id: 'id' + database.length,
-            name: username,
-            password: password,
-            pfp:0,
-            playCount:0,
-            winCount:0,
-            experience: 0,
-            score:0,
-        });
+        var newUser = null;
+        if (!database.users.find(user => user.name === username)) {
+            newUser = {
+                id: 'id' + database.length,
+                name: username,
+                password: password,
+                pfp: 0,
+                playCount: 0,
+                winCount: 0,
+                experience: 0,
+                score: 0,
+            };
+            database.users.push(newUser);
+        }
+        return newUser;
     },
     logIn: (name, password) => {
         var result = null;
@@ -81,8 +84,7 @@ module.exports = {
                 name: result.name,
                 pfp: result.pfp
             };
-        }
-        else return null;
+        } else return null;
     },
     getUser: id => {
         return database.users.find(user => user.id === id) || null;

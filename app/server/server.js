@@ -15,6 +15,7 @@ var Room = require('./lib/room');
 
 app.use(express.static(__dirname + '/../client'));
 
+var loggedUsers = new Map();
 var users = new Map();
 var rooms = new Map();
 
@@ -32,7 +33,7 @@ io.on('connection', socket => {
             console.log('User \033[33m' + socket.id + '\033[0m joined as \033[33m' + name + '\033[0m');
         }
     });
-    
+
     //
     // User request changing name
     //
@@ -202,13 +203,28 @@ io.on('connection', socket => {
 
     socket.on('requestLogIn', user => {
         updateLeavingUser();
-        socket.emit('logIn', api.logIn(user.name, user.password));
+        var userConnection = null;
+        if (!Array.from(loggedUsers.values()).find(loggedUser => loggedUser === user.name)) {
+            userConnection = api.logIn(user.name, user.password);
+            if (userConnection) {
+                loggedUsers.set(socket.id, userConnection.name);
+                console.log('Log in : User \033[33m' + socket.id + '\033[0m logged in as \033[33m' + userConnection.name + '\033[0m');
+            }
+        }
+        socket.emit('logIn', userConnection);
     });
 
     socket.on('requestRegister', user => {
-        api.register(user.name, user.password);
+        if (api.register(user.name, user.password)) {
+            console.log('Register : User \033[33m' + socket.id + '\033[0m registered as \033[33m' + userConnection.name + '\033[0m');
+        };
         updateLeavingUser();
-        socket.emit('logIn', api.logIn(user.name, user.password));
+        var userConnection = api.logIn(user.name, user.password);
+        if (userConnection) {
+            loggedUsers.set(socket.id, userConnection.name);
+            console.log('Log in : User \033[33m' + socket.id + '\033[0m logged in as \033[33m' + userConnection.name + '\033[0m');
+        }
+        socket.emit('logIn', userConnection);
     });
 
     socket.on('requestUpdateUser', user => {
@@ -219,6 +235,10 @@ io.on('connection', socket => {
     socket.on('requestLogOut', () => {
         updateLeavingUser();
         socket.emit('logOut');
+        if (loggedUsers.has(socket.id)) {
+            loggedUsers.delete(socket.id);
+            console.log('Log out : User \033[33m' + socket.id + '\033[0m logged out');
+        }
     });
 
     //
@@ -249,6 +269,10 @@ io.on('connection', socket => {
                 io.to('rooms_socket_channel_security_length').emit('roomList', util.getRoomListData(rooms));
             }
             users.delete(socket.id);
+        }
+        if (loggedUsers.has(socket.id)) {
+            loggedUsers.delete(socket.id);
+            console.log('Log out : User \033[33m' + socket.id + '\033[0m logged out');
         }
         console.log('Disconnect : \033[31m' + socket.id + '\033[0m');
     });
