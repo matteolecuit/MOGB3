@@ -65,7 +65,10 @@ io.on('connection', socket => {
     // User creates a new room
     //
     socket.on('requestCreateRoom', name => {
-        if (rooms.has(name)) socket.disconnect();
+        if (rooms.has(name)) socket.emit('notification', {
+            type: 'error',
+            message: 'ERROR : This room name is already taken'
+        });
         else {
             var user = users.get(socket.id);
             var room = new Room(name, user);

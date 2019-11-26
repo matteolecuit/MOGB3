@@ -5,10 +5,12 @@ class Application {
         this.serverData = null;
 
         this.display = new Display(this.socket);
-        
-        this.keyboardListener = new KeyboardListener();
 
         this.setupSocket = () => {
+
+            this.socket.on('notification', notification => {
+                this.display.sendNotification(notification.type, notification.message);
+            });
 
             this.socket.on('authPage', () => {
                 this.display.showAuthScreen();
@@ -76,8 +78,6 @@ class Application {
                 this.socket.close();
                 alert("Disconnected");
             });
-
-            // this.keyboardListener.listen(this.socket);
         }
 
         this.init = () => {
