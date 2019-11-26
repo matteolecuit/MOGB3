@@ -45,7 +45,14 @@ pub fn user_manager_get_all(context: &Context) -> Result<Vec<User>, ServiceError
     use crate::schema::users::dsl::*;
     let conn: &PgConnection = &context.db;
 
-    Ok(users.limit(100).load::<User>(conn)?)
+    Ok(users.load::<User>(conn)?)
+}
+
+pub fn user_manager_get_one(context: &Context) -> Result<Vec<User>, ServiceError> {
+    use crate::schema::users::dsl::*;
+    let conn: &PgConnection = &context.db;
+    let new_email = context.user.email.as_ref().unwrap();
+    Ok(users.filter(email.eq(&new_email)).load::<User>(conn)?)
 }
 
 pub fn user_manager_get_jwt(context: &Context) -> Result<Token, ServiceError> {

@@ -38,13 +38,13 @@ impl HumanClaims {
         self.sub.as_str()
     }
     fn iat(&self) -> String {
-        let fmt = StrftimeItems::new("%d-%m-%Y %H:%M:%S");
+        let fmt = StrftimeItems::new("%Y-%m-%d %H:%M:%S");
         NaiveDateTime::from_timestamp(*&self.iat, 0)
             .format_with_items(fmt.clone())
             .to_string()
     }
     fn exp(&self) -> String {
-        let fmt = StrftimeItems::new("%d-%m-%Y %H:%M:%S");
+        let fmt = StrftimeItems::new("%Y-%m-%d %H:%M:%S");
         NaiveDateTime::from_timestamp(*&self.exp, 0)
             .format_with_items(fmt.clone())
             .to_string()

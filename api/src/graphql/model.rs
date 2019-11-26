@@ -1,7 +1,7 @@
 use crate::database::pool::PgPooledConnection;
 use crate::errors::ServiceError;
 use crate::jwt::model::{DecodedToken, HumanClaims, Token};
-use crate::user::manager::{user_manager_get_all, user_manager_get_decode, user_manager_get_jwt};
+use crate::user::manager::{user_manager_get_all, user_manager_get_one, user_manager_get_decode, user_manager_get_jwt};
 use crate::user::model::{SlimUser, User};
 use juniper::Context as JuniperContext;
 use std::sync::Arc;
@@ -21,6 +21,9 @@ pub struct QueryRoot;
 impl QueryRoot {
     pub fn users(context: &Context) -> Result<Vec<User>, ServiceError> {
         user_manager_get_all(&context)
+    }
+    pub fn user(context: &Context) -> Result<Vec<User>, ServiceError> {
+        user_manager_get_one(&context)
     }
     pub fn token(context: &Context) -> Result<Token, ServiceError> {
         user_manager_get_jwt(&context)
