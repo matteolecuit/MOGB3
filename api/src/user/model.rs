@@ -19,6 +19,7 @@ pub struct User {
     pub win_count: i32,
     pub experience: i32,
     pub score: i32,
+    pub profile_picture: i32,
 }
 
 #[derive(Debug, Insertable)]

@@ -10,7 +10,8 @@ CREATE TABLE users (
   play_count INTEGER NOT NULL DEFAULT 0,
   win_count INTEGER NOT NULL DEFAULT 0,
   experience INTEGER NOT NULL DEFAULT 0,
-  score INTEGER NOT NULL DEFAULT 0
+  score INTEGER NOT NULL DEFAULT 0,
+  profile_picture INTEGER NOT NULL DEFAULT 0
 );
 
 CREATE UNIQUE INDEX email_idx ON users(email);
