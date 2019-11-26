@@ -12,5 +12,6 @@ table! {
         win_count -> Int4,
         experience -> Int4,
         score -> Int4,
+        profile_picture -> Int4,
     }
 }
