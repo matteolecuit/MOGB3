@@ -211,12 +211,14 @@ class Display {
         //
 
         this.updateUser = (user, selectedImg) => {
-            var newname = document.getElementById('nameInput').value || user.name;
+            var newname = document.getElementById('nameInput').value;
             var newpassword = document.getElementById('passwordInput').value;
             var confirmPassword = document.getElementById('confirmPasswordInput').value;
 
-            if ((!newname || newname && newname.length > 0 && newname.length < 15) && ((!newpassword && !confirmPassword) || (newpassword && newpassword.length > 0 &&
-                    confirmPassword && confirmPassword.length > 0 && newpassword === confirmPassword))) {
+            if (!(!newname && !newpassword && !selectedImg && selectedImg !== 0) &&
+                (!newname || newname && newname.length > 0 && newname.length < 15) &&
+                ((!newpassword && !confirmPassword) || (newpassword && newpassword.length > 0 &&
+                confirmPassword && confirmPassword.length > 0 && newpassword === confirmPassword))) {
                 this.socket.emit('requestUpdateUser', {
                     id: user.id,
                     newname: newname,
@@ -232,6 +234,9 @@ class Display {
             }
             else if (newpassword !== confirmPassword) {
                 this.sendNotification('error', 'ERROR : confirmation password does not match');
+            }
+            else if (!newname && !newpassword && !selectedImg) {
+                this.sendNotification('error', 'ERROR : no changes detected');
             }
         }
 

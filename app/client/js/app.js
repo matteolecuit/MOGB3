@@ -56,7 +56,10 @@ class Application {
                     this.display.user = user;
                     this.display.showTitleScreen();
                 }
-                else this.display.showAuthScreen();
+                else {
+                    this.display.showAuthScreen();
+                    this.display.sendNotification('error', 'ERROR : login failed');
+                }
             })
 
             this.socket.on("logOut", () => {
