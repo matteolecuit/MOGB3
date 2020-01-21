@@ -19,19 +19,19 @@ class Application {
             this.socket.on('newsPage', news => {
                 this.display.showHomeScreen(news);
             });
-        
+
             this.socket.on('playPage', () => {
                 this.display.showTitleScreen();
             });
-        
+
             this.socket.on('rankingsPage', rankings => {
                 this.display.showRankingsScreen(rankings);
             });
-        
+
             this.socket.on('aboutPage', () => {
                 this.display.showAboutScreen();
             });
-        
+
             this.socket.on('profilePage', user => {
                 this.display.user = user;
                 this.display.showProfileScreen(user);
@@ -49,6 +49,27 @@ class Application {
                 this.display.showRoom(room);
             });
 
+            this.socket.on("startGame", room => {
+                this.display.startGame(room);
+
+                var keyboardListener = new KeyboardListener();
+                this.gameLoop = setInterval(() => {
+                    this.socket.emit("requestInputs", {
+                        inputs: keyboardListener.keys,
+                        roomName: room.name
+                    });
+                }, 1000 / 60);
+            });
+
+            this.socket.on("updateGame", room => {
+                this.display.canvas.update(room);
+            });
+
+            this.socket.on("endGame", room => {
+                clearInterval(this.gameLoop);
+                this.display.showRoom(room);
+            });
+
             this.socket.on("leaveRoom", name => {
                 this.display.getRoomList();
             });
@@ -57,8 +78,7 @@ class Application {
                 if (user) {
                     this.display.user = user;
                     this.display.showTitleScreen();
-                }
-                else {
+                } else {
                     this.display.showAuthScreen();
                     this.display.sendNotification('error', 'ERROR : login failed');
                 }

@@ -1,7 +1,7 @@
 require('dotenv').config({
     path: __dirname + '/../../.env'
 });
-const serverPort = process.env.SERVERPORT;
+const serverPort = process.env.SERVER_PORT || 3000;
 
 const express = require('express');
 const app = express();
@@ -87,16 +87,26 @@ io.on('connection', socket => {
     socket.on('requestJoinRoom', name => {
         if (!rooms.has(name)) socket.disconnect();
         else {
-            var user = users.get(socket.id);
             var room = rooms.get(name);
-            room.users.set(socket.id, user);
-            user.team = 'spectator';
+            if (room.users.size >= room.size) {
+                socket.emit('notification', {
+                    type: 'error',
+                    message: 'ERROR : The room is full'
+                });
+            } else {
+                var user = users.get(socket.id);
+                room.users.set(socket.id, user);
+                user.team = null;
 
-            socket.leave('rooms_socket_channel_security_length');
-            io.to('rooms_socket_channel_security_length').emit('roomList', util.getRoomListData(rooms));
-            socket.join(name);
-            io.to(name).emit('room', util.getRoomData(room));
-            console.log('User \033[33m' + user.name + '\033[0m joined room \033[33m' + name + '\033[0m');
+                var userConnection = loggedUsers.has(socket.id) ? loggedUsers.get(socket.id) : null;
+                if (userConnection) users.get(socket.id).pfp = userConnection.pfp;
+
+                socket.leave('rooms_socket_channel_security_length');
+                io.to('rooms_socket_channel_security_length').emit('roomList', util.getRoomListData(rooms));
+                socket.join(name);
+                io.to(name).emit('room', util.getRoomData(room));
+                console.log('User \033[33m' + user.name + '\033[0m joined room \033[33m' + name + '\033[0m');
+            }
         }
     });
 
@@ -130,15 +140,145 @@ io.on('connection', socket => {
     });
 
     //
-    // User selects team or spectator side
+    // User selects team
     //
     socket.on('requestSelectTeam', data => {
         var user = users.get(socket.id);
-        var room = rooms.get(data.name)
+        var room = rooms.get(data.name);
         user.team = data.team;
 
         io.to(room.name).emit('room', util.getRoomData(room));
     });
+
+    //
+    // User start game
+    //
+
+    var updateGame = (roomName, gameLoop) => {
+        var room = rooms.get(roomName);
+
+        var bullets = [];
+        room.users.forEach(user => user.bullets.forEach(bullet => {
+            if (bullet.active) bullets.push(bullet)
+        }));
+        bullets.forEach(bullet => {
+            if (bullet.pos.x > 480 || bullet.pos.x + bullet.size.x < 0 ||
+                bullet.pos.y > 270 || bullet.pos.y + bullet.size.y < 0
+            ) bullet.active = false;
+            else {
+                bullet.pos.x += bullet.dir.x * bullet.speed.x;
+                bullet.pos.y += bullet.dir.y * bullet.speed.y;
+            }
+        });
+
+        room.users.forEach(player => {
+            if (player.active) {
+                var inputs = player.inputs;
+
+                bullets.forEach(bullet => {
+                    if (!(player.pos.y + player.size.y <= bullet.pos.y || player.pos.y >= bullet.pos.y + bullet.size.y ||
+                        player.pos.x + player.size.x <= bullet.pos.x || player.pos.x >= bullet.pos.x + bullet.size.x) && player.team !== bullet.team) {
+                        player.active = false;
+                    }
+                });
+
+                if (inputs.left === inputs.right) {
+                    inputs.left = false;
+                    inputs.right = false;
+                }
+                if (inputs.down === inputs.up) {
+                    inputs.down = false;
+                    inputs.up = false;
+                }
+
+                if (inputs.left) {
+                    player.pos.x -= player.speed.x;
+                    if (!inputs.b) {
+                        player.dir.x = -1;
+                        if (!inputs.up && !inputs.down) player.dir.y = 0;
+                    }
+                }
+                if (inputs.right) {
+                    player.pos.x += player.speed.x;
+                    if (!inputs.b) {
+                        player.dir.x = 1;
+                        if (!inputs.up && !inputs.down) player.dir.y = 0;
+                    }
+                }
+                if (inputs.down) {
+                    player.pos.y += player.speed.y;
+                    if (!inputs.b) {
+                        player.dir.y = 1;
+                        if (!inputs.left && !inputs.right) player.dir.x = 0;
+                    }
+                }
+                if (inputs.up) {
+                    player.pos.y -= player.speed.y;
+                    if (!inputs.b) {
+                        player.dir.y = -1;
+                        if (!inputs.left && !inputs.right) player.dir.x = 0;
+                    }
+                }
+
+                if (player.inputLagA) player.inputLagA--;
+                else if (inputs.a) {
+                    player.bullets.push({
+                        team:player.team,
+                        active: true,
+                        pos: {
+                            x: player.pos.x + player.size.x / 4,
+                            y: player.pos.y + player.size.y / 4,
+                        },
+                        size: {
+                            x: 8,
+                            y: 8
+                        },
+                        speed: {
+                            x: 4,
+                            y: 4
+                        },
+                        dir: {
+                            x: player.dir.x,
+                            y: player.dir.y
+                        }
+                    });
+                    player.inputLagA = 60 / 6;
+                }
+
+                player.pos.x = player.pos.x < 0 ? 0 : player.pos.x > 480 - 16 ? 480 - 16 : player.pos.x;
+                player.pos.y = player.pos.y < 0 ? 0 : player.pos.y > 270 - 16 ? 270 - 16 : player.pos.y;
+            }
+        });
+
+        var blueAlive = 0;
+        var redAlive = 0;
+        room.users.forEach(user => {
+            blueAlive += user.team === "blue" && user.active ? 1 : 0;
+            redAlive += user.team === "red" && user.active ? 1 : 0;
+        });
+        if (!blueAlive || !redAlive) {
+            room.users.forEach(user => {
+                user.bullets = [];
+                user.active = true;
+                user.pos = { x:0, y:0 };
+            });
+            clearInterval(gameLoop);
+            io.to(roomName).emit('endGame', util.getRoomData(room));
+        }
+    }
+
+    socket.on('requestStartGame', roomName => {
+        var room = rooms.get(roomName);
+        io.to(roomName).emit('startGame', util.getRoomData(room));
+        var gameLoop = setInterval(() => {
+            updateGame(roomName, gameLoop);
+            io.to(roomName).emit('updateGame', util.getGameData(room));
+        }, 1000 / 60);
+    });
+
+    socket.on('requestInputs', data => {
+        rooms.get(data.roomName).users.get(socket.id).inputs = data.inputs;
+    })
 
     //
     // Listen to users redirects and update game data
@@ -206,15 +346,20 @@ io.on('connection', socket => {
 
     socket.on('requestLogIn', user => {
         updateLeavingUser();
-        var userConnection = null;
         if (!Array.from(loggedUsers.values()).find(loggedUser => loggedUser === user.name)) {
-            userConnection = api.logIn(user.name, user.password);
+            var userConnection = api.logIn(user.name, user.password);
             if (userConnection) {
-                loggedUsers.set(socket.id, userConnection.name);
+                loggedUsers.set(socket.id, userConnection);
+
                 console.log('Log in : User \033[33m' + socket.id + '\033[0m logged in as \033[33m' + userConnection.name + '\033[0m');
             }
+            socket.emit('logIn', userConnection);
+        } else {
+            socket.emit('notification', {
+                type: 'error',
+                message: 'ERROR : This user is already logged'
+            });
         }
-        socket.emit('logIn', userConnection);
     });
 
     socket.on('requestRegister', user => {

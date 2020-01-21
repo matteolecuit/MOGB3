@@ -5,6 +5,7 @@ class Display {
         this.user = null;
         this.nickname = null;
         this.selectedRoom = null;
+        this.canvas = null;
 
         //
         // Header
@@ -97,11 +98,9 @@ class Display {
                     name: name,
                     password: password
                 });
-            }
-            else if (!name || name.length <= 0 || name.length >= 15) {
+            } else if (!name || name.length <= 0 || name.length >= 15) {
                 this.sendNotification('error', 'ERROR : incorrect username');
-            }
-            else if (!password || password.length <= 0) {
+            } else if (!password || password.length <= 0) {
                 this.sendNotification('error', 'ERROR : incorrect password');
             }
         }
@@ -117,14 +116,11 @@ class Display {
                     name: name,
                     password: password
                 });
-            }
-            else if (!name || name.length <= 0 || name.length >= 15) {
+            } else if (!name || name.length <= 0 || name.length >= 15) {
                 this.sendNotification('error', 'ERROR : incorrect username');
-            }
-            else if (!password || password.length <= 0) {
+            } else if (!password || password.length <= 0) {
                 this.sendNotification('error', 'ERROR : incorrect password');
-            }
-            else if (password !== confirmPassword) {
+            } else if (password !== confirmPassword) {
                 this.sendNotification('error', 'ERROR : confirmation password does not match');
             }
         }
@@ -218,24 +214,20 @@ class Display {
             if (!(!newname && !newpassword && !selectedImg && selectedImg !== 0) &&
                 (!newname || newname && newname.length > 0 && newname.length < 15) &&
                 ((!newpassword && !confirmPassword) || (newpassword && newpassword.length > 0 &&
-                confirmPassword && confirmPassword.length > 0 && newpassword === confirmPassword))) {
+                    confirmPassword && confirmPassword.length > 0 && newpassword === confirmPassword))) {
                 this.socket.emit('requestUpdateUser', {
                     id: user.id,
                     newname: newname,
                     newpassword: newpassword,
                     newPfp: selectedImg
                 });
-            }
-            else if (newname && (name.length <= 0 || name.length >= 15)) {
+            } else if (newname && (name.length <= 0 || name.length >= 15)) {
                 this.sendNotification('error', 'ERROR : incorrect new username');
-            }
-            else if (newpassword && password.length <= 0) {
+            } else if (newpassword && password.length <= 0) {
                 this.sendNotification('error', 'ERROR : incorrect new password');
-            }
-            else if (newpassword !== confirmPassword) {
+            } else if (newpassword !== confirmPassword) {
                 this.sendNotification('error', 'ERROR : confirmation password does not match');
-            }
-            else if (!newname && !newpassword && !selectedImg) {
+            } else if (!newname && !newpassword && !selectedImg) {
                 this.sendNotification('error', 'ERROR : no changes detected');
             }
         }
@@ -387,8 +379,7 @@ class Display {
                 this.nickname = name;
                 this.socket.emit('join', name);
                 this.getRoomList(this.socket);
-            }
-            else {
+            } else {
                 this.sendNotification('error', 'ERROR : incorrect nickname');
             }
         }
@@ -447,11 +438,15 @@ class Display {
             this.socket.emit('requestRoomList');
         }
 
-        this.selectRoom = name => {
-            this.selectedRoom = name;
+        this.selectRoom = room => {
+
+            this.selectedRoom = room.name;
             Array.from(document.getElementsByClassName("selected")).forEach(item => item.classList.remove("selected"));
-            document.getElementById('joinRoom').classList.remove("unselectable");
-            document.getElementById(name).className = 'selected';
+            document.getElementById(room.name).className = 'selected';
+            
+            if (room.size > room.users.length) document.getElementById('joinRoom').classList.remove("unselectable");
+            else document.getElementById("joinRoom").className = 'unselectable';
+            
         }
 
         this.joinRoom = name => {
@@ -538,13 +533,13 @@ class Display {
             roomList.forEach(room => {
                 var tr = document.createElement("tr");
                 tr.id = room.name;
-                tr.onclick = () => this.selectRoom(room.name);
+                tr.onclick = () => this.selectRoom(room);
                 var td1 = document.createElement("td");
                 td1.id = 'td1';
                 td1.innerHTML = room.name;
                 var td2 = document.createElement("td");
                 td2.id = 'td2';
-                td2.innerHTML = playerCount + '/∞';
+                td2.innerHTML = room.users.length + '/' + room.size;
                 var td3 = document.createElement("td");
                 td3.id = 'td3';
                 td3.innerHTML = 'No';
@@ -556,7 +551,7 @@ class Display {
         }
 
         //
-        // ChangeNick
+        // ChangeNickname
         //
 
         this.changeNick = () => {
@@ -565,8 +560,7 @@ class Display {
                 this.nickname = name;
                 this.socket.emit('changeNick', name);
                 this.getRoomList(this.socket);
-            }
-            else {
+            } else {
                 this.sendNotification('error', 'ERROR : incorrect nickname');
             }
         }
@@ -581,7 +575,7 @@ class Display {
 
             var startTitle = document.createElement("p");
             startTitle.id = "title";
-            startTitle.innerHTML = "Change Nick";
+            startTitle.innerHTML = "Change Nickname";
 
             var inputContainer = document.createElement("div");
             inputContainer.id = "inputContainer";
@@ -698,8 +692,9 @@ class Display {
 
             var redTeamTable = document.createElement("table");
             redTeamTable.id = "redTeamTable";
+            redTeamTable.className = 'teamTable';
             var redTeamCaption = document.createElement("caption");
-            redTeamCaption.innerHTML = "Red Team";
+            redTeamCaption.innerHTML = "Red team";
             var redTeamBody = document.createElement("tbody");
             redTeamBody.id = "redTeamBody";
             redTeamBody.onclick = () => this.socket.emit('requestSelectTeam', {
@@ -707,21 +702,22 @@ class Display {
                 team: 'red'
             });
 
-            var spectators = document.createElement("table");
-            spectators.id = "spectators";
-            var spectatorsCaption = document.createElement("caption");
-            spectatorsCaption.innerHTML = "Spectators";
-            var spectatorsBody = document.createElement("tbody");
-            spectatorsBody.id = "spectatorsBody";
-            spectatorsBody.onclick = () => this.socket.emit('requestSelectTeam', {
+            var noTeam = document.createElement("table");
+            noTeam.id = "noTeam";
+            var noTeamsCaption = document.createElement("caption");
+            noTeamsCaption.innerHTML = "Choose your team";
+            var noTeamsBody = document.createElement("tbody");
+            noTeamsBody.id = "noTeamsBody";
+            noTeamsBody.onclick = () => this.socket.emit('requestSelectTeam', {
                 name: room.name,
-                team: 'spectator'
+                team: null
             });
 
             var blueTeamTable = document.createElement("table");
             blueTeamTable.id = "blueTeamTable";
+            blueTeamTable.className = 'teamTable';
             var blueTeamCaption = document.createElement("caption");
-            blueTeamCaption.innerHTML = "Blue Team";
+            blueTeamCaption.innerHTML = "Blue team";
             var blueTeamBody = document.createElement("tbody");
             blueTeamBody.id = "blueTeamBody";
             blueTeamBody.onclick = () => this.socket.emit('requestSelectTeam', {
@@ -731,10 +727,22 @@ class Display {
 
             room.users.forEach(user => {
                 var tr = document.createElement("tr");
-                tr.innerHTML = user.name;
+                if (user.team) {
+                    var pfpImg = document.createElement("img");
+                    pfpImg.className = 'pfpImg';
+                    pfpImg.src = "../img/pfp" + user.pfp + ".png";
+
+                    var trName = document.createElement("p");
+                    trName.innerHTML = user.name;
+
+                    tr.appendChild(pfpImg);
+                    tr.appendChild(trName);
+                }
+                else tr.innerHTML = user.name;
+
                 if (user.team === 'red') redTeamBody.appendChild(tr);
                 else if (user.team === 'blue') blueTeamBody.appendChild(tr);
-                else if (user.team === 'spectator') spectatorsBody.appendChild(tr);
+                else if (user.team === null) noTeamsBody.appendChild(tr);
             });
 
             var leaveButton = document.createElement("button");
@@ -742,21 +750,36 @@ class Display {
             leaveButton.innerHTML = "Leave";
             leaveButton.onclick = () => this.socket.emit('requestLeaveRoom', room.name);
 
+            var startButton = null;
+            startButton = document.createElement("button");
+            startButton.id = "startRoomButton";
+            startButton.innerHTML = "Start";
+            startButton.onclick = () => this.socket.emit('requestStartGame', room.name);
+            if (!room.users.find(user => user.team === 'red') || !room.users.find(user => user.team === 'blue')) {
+                startButton.className = "unselectable";
+            }
+
             redTeamTable.appendChild(redTeamCaption);
             redTeamTable.appendChild(redTeamBody);
-            spectators.appendChild(spectatorsCaption);
-            spectators.appendChild(spectatorsBody);
+            noTeam.appendChild(noTeamsCaption);
+            noTeam.appendChild(noTeamsBody);
             blueTeamTable.appendChild(blueTeamCaption);
             blueTeamTable.appendChild(blueTeamBody);
             tableContainer.appendChild(redTeamTable);
-            tableContainer.appendChild(spectators);
+            tableContainer.appendChild(noTeam);
             tableContainer.appendChild(blueTeamTable);
             roomMenu.appendChild(roomTitle);
             roomMenu.appendChild(startGameButtonContainer);
             roomMenu.appendChild(tableContainer);
+            roomMenu.appendChild(startButton);
             roomMenu.appendChild(leaveButton);
             document.body.appendChild(roomMenu);
         };
+
+        this.startGame = room => {
+            document.body.innerHTML = "";
+            this.canvas = new CanvasDisplay();
+        }
 
         //
         // Rankings

@@ -2,20 +2,17 @@ class KeyboardListener {
     constructor() {
         this.keys = {};
 
-        this.keyCodes = new Map([
-            [81, "left"],
-            [90, "up"],
-            [68, "right"],
-            [83, "down"],
-            [79, "a"],
-            [80, "b"]
-        ]);
+        this.keyCodes = {
+            ArrowLeft: "left",
+            ArrowUp: "up",
+            ArrowRight: "right",
+            ArrowDown: "down",
+            w: "a",
+            Shift: "b"
+        };
 
         this.handler = event => {
-            if (this.keyCodes.has(event.keyCode)) {
-                this.keys[this.keyCodes.get(event.keyCode)] = event.type === "keydown";
-                event.preventDefault();
-            }
+            if (event.key in this.keyCodes) this.keys[this.keyCodes[event.key]] = event.type === "keydown";
         }
 
         addEventListener("keydown", this.handler);

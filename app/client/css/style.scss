@@ -19,6 +19,12 @@ html {
         font-family: sans-serif;
         background-color: $color-primary;
 
+        canvas {
+            margin: auto;
+            background: $color-secondary;
+            box-shadow: 0px 0px 16px 0px $color-black;
+        }
+
         .notif {
             position: absolute;
             top: 64px;
@@ -53,7 +59,6 @@ html {
                 margin: 8px;
                 border-radius: 32px;
                 border: none;
-                background: $color-black;
                 background-position: center;
             }
 
@@ -233,6 +238,7 @@ html {
                 color: $color-white;
                 background-color: $color-secondary;
                 box-shadow: none;
+                pointer-events: none;
                 cursor: auto;
             }
 
@@ -388,9 +394,8 @@ html {
                 margin: 0 auto;
                 display: flex;
 
-
                 table {
-                    width: 160px;
+                    width: 240px;
                     display: flex;
                     flex-wrap: wrap;
 
@@ -400,16 +405,16 @@ html {
                     }
 
                     tr {
-                        width: 120px;
-                        height: 18px;
-                        padding: 4px;
-                        display: flex;
+                        margin: 8px auto;
+                        text-align: center;
                     }
 
                     tbody {
-                        width: 160px;
-                        height: 256px;
+                        width: 240px;
+                        height: 272px;
                         margin: 16px 0;
+                        display: flex;
+                        flex-direction: column;
                         overflow-y: auto;
                         overflow-x: hidden;
                         background-color: $color-bg-primary;
@@ -420,11 +425,43 @@ html {
                         background-color: $color-secondary;
                     }
                 }
+                
+                .teamTable tr {
+                    width: 238px;
+                    height: 68px;
+                    margin: 0;
+                    padding: 0 8px;
+                    display: flex;
+
+                    .pfpImg {
+                        width: 64px;
+                        height: 64px;
+                        margin: 2px;
+                        border-radius: 32px;
+                    }
+
+                    p {
+                        text-align: center;
+                        margin: auto;
+                    }
+                }
             }
 
             #leaveButton {
                 width: 128px;
                 margin: 0 auto;
+            }
+
+            #startRoomButton {
+                width: 128px;
+                margin: 0 auto 16px;
+            }
+            
+            #startRoomButton.unselectable {
+                color: $color-white;
+                background-color: $color-secondary;
+                pointer-events: none;
+                cursor: auto;
             }
 
             #startGameButtonContainer {
