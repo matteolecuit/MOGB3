@@ -17,6 +17,10 @@ class CanvasDisplay {
             game.users.forEach(user => {
                 this.cx.fillStyle = user.active ? user.team === 'blue' ? '#00f' : '#f00' : '#8888';
                 this.cx.fillRect(user.pos.x * this.zoom, user.pos.y * this.zoom, user.size.x * this.zoom, user.size.y * this.zoom);
+                this.cx.fillStyle = "#000";
+                this.cx.textAlign = 'center';
+                this.cx.font = 10 * this.zoom + 'px serif';
+                this.cx.fillText(user.name, (user.pos.x + user.size.x / 2) * this.zoom, (user.pos.y - 8) * this.zoom);
             });
         };
 

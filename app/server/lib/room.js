@@ -3,6 +3,7 @@ class Room {
         this.name = name;
         this.admin = admin;
         this.users = new Map();
+        this.open = true;
         this.size = 8;
     }
 }

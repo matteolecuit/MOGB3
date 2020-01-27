@@ -15,13 +15,13 @@ class User {
             y:1
         };
         this.inputs = {};
-        this.pos = {
-            x: 0,
-            y: 0
-        };
         this.size = {
             x:16,
             y:16
+        };
+        this.pos = {
+            x:Math.floor(Math.random() * (480 - this.size.x)),
+            y:Math.floor(Math.random() * (270 - this.size.y))
         };
     }
 }

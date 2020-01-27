@@ -50,7 +50,7 @@ module.exports = {
             size: user.size
         }));
         var bulletList = [];
-        room.users.forEach(user => user.bullets.forEach(bullet =>{
+        room.users.forEach(user => user.bullets.forEach(bullet => {
             if (bullet.active) bulletList.push(bullet);
         }));
         return {
@@ -62,19 +62,21 @@ module.exports = {
     getRoomListData: rooms => {
         var newRooms = [];
         rooms.forEach(room => {
-            var userList = [];
-            room.users.forEach(user => userList.push({
-                name: user.name,
-                pfp: user.pfp,
-                team: user.team
-            }));
+            if (room.open) {
+                var userList = [];
+                room.users.forEach(user => userList.push({
+                    name: user.name,
+                    pfp: user.pfp,
+                    team: user.team
+                }));
 
-            newRooms.push({
-                name: room.name,
-                size: room.size,
-                users: userList,
-                admin: room.admin.name
-            });
+                newRooms.push({
+                    name: room.name,
+                    size: room.size,
+                    users: userList,
+                    admin: room.admin.name
+                });
+            }
         });
         return newRooms;
     }

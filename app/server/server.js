@@ -154,6 +154,13 @@ io.on('connection', socket => {
     // User start game
     //
 
+    var getRandomPos = size => {
+        return {
+            x:Math.floor(Math.random() * (480 - size.x)),
+            y:Math.floor(Math.random() * (270 - size.y))
+        }
+    }
+
     var updateGame = (roomName, gameLoop) => {
         var room = rooms.get(roomName);
 
@@ -190,6 +197,8 @@ io.on('connection', socket => {
                     inputs.down = false;
                     inputs.up = false;
                 }
+
+                player.speed = !inputs.b ? { x:2, y:2 } : { x:1, y:1 };
 
                 if (inputs.left) {
                     player.pos.x -= player.speed.x;
@@ -260,16 +269,18 @@ io.on('connection', socket => {
             room.users.forEach(user => {
                 user.bullets = [];
                 user.active = true;
-                user.pos = { x:0, y:0 };
+                user.pos = getRandomPos(user.size);
             });
             clearInterval(gameLoop);
             io.to(roomName).emit('endGame', util.getRoomData(room));
+            room.open = true;
         }
     }
 
     socket.on('requestStartGame', roomName => {
         var room = rooms.get(roomName);
         io.to(roomName).emit('startGame', util.getRoomData(room));
+        room.open = false;
         var gameLoop = setInterval(() => {
             updateGame(roomName, gameLoop);
             io.to(roomName).emit('updateGame', util.getGameData(room));
