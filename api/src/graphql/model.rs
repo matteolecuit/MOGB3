@@ -2,7 +2,9 @@ use crate::database::pool::PgPooledConnection;
 use crate::errors::ServiceError;
 use crate::jwt::model::{DecodedToken, HumanClaims, Token};
 use crate::user::manager::{user_manager_get_all, user_manager_get_one, user_manager_get_decode, user_manager_get_jwt};
+use crate::profile_picture::manager::{profile_picture_manager_get_all };
 use crate::user::model::{SlimUser, User};
+use crate::profile_picture::model::{ProfilePicture};
 use juniper::Context as JuniperContext;
 use std::sync::Arc;
 
@@ -31,6 +33,11 @@ impl QueryRoot {
     pub fn decode(context: &Context) -> Result<&HumanClaims, ServiceError> {
         user_manager_get_decode(&context)
     }
+    pub fn profile_pictures(context: &Context) -> Result<Vec<ProfilePicture>, ServiceError> {
+        profile_picture_manager_get_all(&context)
+    }
+
+    
 }
 
 pub struct Mutation;

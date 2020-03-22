@@ -11,6 +11,7 @@ mod graphql;
 mod jwt;
 mod schema;
 mod user;
+mod profile_picture;
 
 use crate::graphql::manager::create_schema;
 use crate::graphql::route::route_graphql;

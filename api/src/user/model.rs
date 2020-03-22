@@ -32,6 +32,7 @@ pub struct UserInsert {
     pub created_at: NaiveDateTime,
     pub updated_at: NaiveDateTime,
     pub username: String,
+    pub profile_picture: i32,
 }
 
 #[derive(Debug, Deserialize)]
@@ -39,6 +40,7 @@ pub struct UserData {
     pub username: String,
     pub email: String,
     pub password: String,
+    pub profile_picture: i32,
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
@@ -55,10 +57,11 @@ pub struct AuthData {
 pub type LoggedUser = SlimUser;
 
 impl User {
-    pub fn new<S: Into<String>, T: Into<String>, N: Into<String>>(
+    pub fn new<S: Into<String>, T: Into<String>, N: Into<String>, P: Into<i32>>(
         email: S,
         pwd: T,
         username: N,
+        profile_picture:  P
     ) -> UserInsert {
         let salt = make_salt();
         let hash = make_hash(&pwd.into(), &salt);
@@ -70,6 +73,7 @@ impl User {
             updated_at: chrono::Local::now().naive_local(),
             salt,
             username: username.into(),
+            profile_picture: profile_picture.into()
         }
     }
 }
@@ -77,7 +81,7 @@ impl User {
 impl From<User> for SlimUser {
     fn from(user: User) -> Self {
         SlimUser {
-            email: Option::from(user.email),
+            email: Option::from(user.email)
         }
     }
 }
