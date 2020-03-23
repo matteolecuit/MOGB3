@@ -29,29 +29,54 @@ module.exports = {
         var userList = [];
         room.users.forEach(user => userList.push({
             name: user.name,
+            pfp: user.pfp,
             team: user.team
         }));
 
         return {
             name: room.name,
+            size: room.size,
             users: userList,
             admin: room.admin.name
         }
     },
+    getGameData: room => {
+        var userList = [];
+        room.users.forEach(user => userList.push({
+            name: user.name,
+            team: user.team,
+            active: user.active,
+            pos: user.pos,
+            size: user.size
+        }));
+        var bulletList = [];
+        room.users.forEach(user => user.bullets.forEach(bullet => {
+            if (bullet.active) bulletList.push(bullet);
+        }));
+        return {
+            users: userList,
+            bullets: bulletList,
+            name: room.name
+        };
+    },
     getRoomListData: rooms => {
         var newRooms = [];
         rooms.forEach(room => {
-            var userList = [];
-            room.users.forEach(user => userList.push({
-                name: user.name,
-                team: user.team
-            }));
+            if (room.open) {
+                var userList = [];
+                room.users.forEach(user => userList.push({
+                    name: user.name,
+                    pfp: user.pfp,
+                    team: user.team
+                }));
 
-            newRooms.push({
-                name: room.name,
-                users: userList,
-                admin: room.admin.name
-            });
+                newRooms.push({
+                    name: room.name,
+                    size: room.size,
+                    users: userList,
+                    admin: room.admin.name
+                });
+            }
         });
         return newRooms;
     }

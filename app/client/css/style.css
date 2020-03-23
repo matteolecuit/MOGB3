@@ -15,6 +15,33 @@ html body {
   background-color: #88f;
 }
 
+html body canvas {
+  margin: auto;
+  background: #ccf;
+  -webkit-box-shadow: 0px 0px 16px 0px #000;
+          box-shadow: 0px 0px 16px 0px #000;
+}
+
+html body .notif {
+  position: absolute;
+  top: 64px;
+  left: 0;
+  padding: 8px 16px;
+  background: #fff;
+  color: #000;
+  z-index: 999;
+}
+
+html body .notif-info {
+  background: #080;
+  color: #fff;
+}
+
+html body .notif-error {
+  background: #800;
+  color: #fff;
+}
+
 html body header {
   width: 100%;
   position: fixed;
@@ -33,7 +60,6 @@ html body header #profilRound {
   margin: 8px;
   border-radius: 32px;
   border: none;
-  background: #000;
   background-position: center;
 }
 
@@ -105,6 +131,54 @@ html body #container #subtitle {
   font-size: 1.5em;
   margin: 8px auto;
   text-align: center;
+}
+
+html body #container #profileContainer {
+  width: 512px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+  margin: 8px;
+}
+
+html body #container #profileContainer #profileInfos {
+  width: 512px;
+  margin: 32px 0 64px 0;
+  background-color: #f8f8ff;
+  border: 1px solid #ccf;
+}
+
+html body #container #profileContainer #profileInfos p {
+  text-align: center;
+}
+
+html body #container #profileContainer #profileLeft {
+  width: 256px;
+}
+
+html body #container #profileContainer #profileRight {
+  width: 256px;
+  height: 256px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+}
+
+html body #container #profileContainer #profileRight img {
+  width: 64px;
+  height: 64px;
+  margin: 0;
+  cursor: pointer;
+}
+
+html body #container #profileContainer #profileRight .imgSelected {
+  -webkit-box-shadow: 0px 0px 8px 4px #000;
+          box-shadow: 0px 0px 8px 4px #000;
+  z-index: 2;
 }
 
 html body #container .formContainer {
@@ -190,6 +264,7 @@ html body #container button.unselectable {
   background-color: #ccf;
   -webkit-box-shadow: none;
           box-shadow: none;
+  pointer-events: none;
   cursor: auto;
 }
 
@@ -381,16 +456,6 @@ html body #container #roomsOptions button {
   padding: 8px;
 }
 
-html body #container #roomsOptions #ornementImg {
-  width: 128px;
-  height: 96px;
-  -ms-interpolation-mode: nearest-neighbor;
-      image-rendering: -webkit-optimize-contrast;
-      image-rendering: -moz-crisp-edges;
-      image-rendering: -o-pixelated;
-      image-rendering: pixelated;
-}
-
 html body #container #tableContainer {
   margin: 0 auto;
   display: -webkit-box;
@@ -399,7 +464,7 @@ html body #container #tableContainer {
 }
 
 html body #container #tableContainer table {
-  width: 160px;
+  width: 240px;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -413,18 +478,21 @@ html body #container #tableContainer table caption {
 }
 
 html body #container #tableContainer table tr {
-  width: 120px;
-  height: 18px;
-  padding: 4px;
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
+  margin: 8px auto;
+  text-align: center;
 }
 
 html body #container #tableContainer table tbody {
-  width: 160px;
-  height: 256px;
+  width: 240px;
+  height: 272px;
   margin: 16px 0;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
   overflow-y: auto;
   overflow-x: hidden;
   background-color: #f8f8ff;
@@ -435,9 +503,43 @@ html body #container #tableContainer table tbody:hover {
   background-color: #ccf;
 }
 
+html body #container #tableContainer .teamTable tr {
+  width: 238px;
+  height: 68px;
+  margin: 0;
+  padding: 0 8px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+html body #container #tableContainer .teamTable tr .pfpImg {
+  width: 64px;
+  height: 64px;
+  margin: 2px;
+  border-radius: 32px;
+}
+
+html body #container #tableContainer .teamTable tr p {
+  text-align: center;
+  margin: auto;
+}
+
 html body #container #leaveButton {
   width: 128px;
   margin: 0 auto;
+}
+
+html body #container #startRoomButton {
+  width: 128px;
+  margin: 0 auto 16px;
+}
+
+html body #container #startRoomButton.unselectable {
+  color: #fff;
+  background-color: #ccf;
+  pointer-events: none;
+  cursor: auto;
 }
 
 html body #container #startGameButtonContainer {

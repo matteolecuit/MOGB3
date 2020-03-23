@@ -1,35 +1,36 @@
 var database = {
-    users: [
-        {
-            id:'id0',
+    users: [{
+            id: 'id0',
             name: 'admin',
             password: 'password',
-            playCount:0,
-            winCount:0,
+            pfp: 0,
+            playCount: 0,
+            winCount: 0,
             experience: 0,
-            score:0,
+            score: 0,
         },
         {
-            id:'id1',
+            id: 'id1',
             name: 'John',
             password: 'password',
-            playCount:7,
-            winCount:5,
+            pfp: 0,
+            playCount: 7,
+            winCount: 5,
             experience: 0,
-            score:10,
+            score: 10,
         },
         {
-            id:'id2',
+            id: 'id2',
             name: 'Adrien',
             password: 'password',
-            playCount:12,
-            winCount:5,
+            pfp: 0,
+            playCount: 12,
+            winCount: 5,
             experience: 0,
-            score:7,
+            score: 7,
         }
     ],
-    news: [
-        {
+    news: [{
             title: 'Wow ! A title !',
             content: 'Wait... What is that ? Content !?',
             date: 'October 20, 2019'
@@ -56,15 +57,21 @@ var database = {
 
 module.exports = {
     register: (username, password) => {
-        database.users.push({
-            id: 'id' + database.length,
-            name: username,
-            password: password,
-            playCount:0,
-            winCount:0,
-            experience: 0,
-            score:0,
-        });
+        var newUser = null;
+        if (!database.users.find(user => user.name === username)) {
+            newUser = {
+                id: 'id' + database.length,
+                name: username,
+                password: password,
+                pfp: 0,
+                playCount: 0,
+                winCount: 0,
+                experience: 0,
+                score: 0,
+            };
+            database.users.push(newUser);
+        }
+        return newUser;
     },
     logIn: (name, password) => {
         var result = null;
@@ -75,19 +82,19 @@ module.exports = {
             return {
                 id: result.id,
                 name: result.name,
-                profilePicture: 'url(../img/profile-admin.png)'
+                pfp: result.pfp
             };
-        }
-        else return null;
+        } else return null;
     },
     getUser: id => {
         return database.users.find(user => user.id === id) || null;
     },
-    updateUserPersonalInfos: (id, newName, newPassword) => {
+    updateUserPersonalInfos: (id, newName, newPassword, newPfp) => {
         var user = database.users.find(user => user.id === id);
         if (user) {
-            user.name = newName;
-            user.password = newPassword;
+            if (newName && !database.users.find(user => user.name === newName)) user.name = newName;
+            if (newPassword) user.password = newPassword;
+            if (newPfp || newPfp === 0) user.pfp = newPfp;
         }
     },
     updateUserGameInfos: (id, newPlayCount, newWinCount, newExperience, newScore) => {
