@@ -23,3 +23,10 @@ table! {
     updated_at -> Timestamp,
   }
 }
+
+joinable!(users -> profile_pictures (profile_picture))
+
+allow_tables_to_appear_in_same_query!(
+    users,
+    profile_pictures,
+)

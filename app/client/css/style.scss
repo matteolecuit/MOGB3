@@ -19,6 +19,32 @@ html {
         font-family: sans-serif;
         background-color: $color-primary;
 
+        canvas {
+            margin: auto;
+            background: $color-secondary;
+            box-shadow: 0px 0px 16px 0px $color-black;
+        }
+
+        .notif {
+            position: absolute;
+            top: 64px;
+            left: 0;
+            padding: 8px 16px;
+            background: #fff;
+            color: #000;
+            z-index: 999;
+        }
+
+        .notif-info {
+            background: #080;
+            color: #fff;
+        }
+
+        .notif-error {
+            background: #800;
+            color: #fff;
+        }
+
         header {
             width: 100%;
             position: fixed;
@@ -33,7 +59,6 @@ html {
                 margin: 8px;
                 border-radius: 32px;
                 border: none;
-                background: $color-black;
                 background-position: center;
             }
 
@@ -98,6 +123,48 @@ html {
                 font-size: 1.5em;
                 margin: 8px auto;
                 text-align: center;
+            }
+
+            #profileContainer {
+                width: 512px;
+                display: flex;
+                flex-wrap: wrap;
+                margin: 8px;
+
+                #profileInfos {
+                    width: 512px;
+                    margin: 32px 0 64px 0;
+
+                    background-color: $color-bg-primary;
+                    border: 1px solid $color-secondary;
+                    
+                    p {
+                        text-align: center;
+                    }
+                }
+
+                #profileLeft {
+                    width: 256px;
+                }
+
+                #profileRight {
+                    width: 256px;
+                    height: 256px;
+                    display: flex;
+                    flex-wrap: wrap;
+
+                    img {
+                        width: 64px;
+                        height: 64px;
+                        margin: 0;
+                        cursor: pointer;
+                    }
+                    
+                    .imgSelected {
+                        box-shadow: 0px 0px 8px 4px $color-black;
+                        z-index: 2;
+                    }
+                }
             }
 
             .formContainer {
@@ -171,6 +238,7 @@ html {
                 color: $color-white;
                 background-color: $color-secondary;
                 box-shadow: none;
+                pointer-events: none;
                 cursor: auto;
             }
 
@@ -320,21 +388,14 @@ html {
                     margin: 4px auto;
                     padding: 8px;
                 }
-
-                #ornementImg {
-                    width: 128px;
-                    height: 96px;
-                    image-rendering: pixelated;
-                }
             }
 
             #tableContainer {
                 margin: 0 auto;
                 display: flex;
 
-
                 table {
-                    width: 160px;
+                    width: 240px;
                     display: flex;
                     flex-wrap: wrap;
 
@@ -344,16 +405,16 @@ html {
                     }
 
                     tr {
-                        width: 120px;
-                        height: 18px;
-                        padding: 4px;
-                        display: flex;
+                        margin: 8px auto;
+                        text-align: center;
                     }
 
                     tbody {
-                        width: 160px;
-                        height: 256px;
+                        width: 240px;
+                        height: 272px;
                         margin: 16px 0;
+                        display: flex;
+                        flex-direction: column;
                         overflow-y: auto;
                         overflow-x: hidden;
                         background-color: $color-bg-primary;
@@ -364,11 +425,43 @@ html {
                         background-color: $color-secondary;
                     }
                 }
+                
+                .teamTable tr {
+                    width: 238px;
+                    height: 68px;
+                    margin: 0;
+                    padding: 0 8px;
+                    display: flex;
+
+                    .pfpImg {
+                        width: 64px;
+                        height: 64px;
+                        margin: 2px;
+                        border-radius: 32px;
+                    }
+
+                    p {
+                        text-align: center;
+                        margin: auto;
+                    }
+                }
             }
 
             #leaveButton {
                 width: 128px;
                 margin: 0 auto;
+            }
+
+            #startRoomButton {
+                width: 128px;
+                margin: 0 auto 16px;
+            }
+            
+            #startRoomButton.unselectable {
+                color: $color-white;
+                background-color: $color-secondary;
+                pointer-events: none;
+                cursor: auto;
             }
 
             #startGameButtonContainer {

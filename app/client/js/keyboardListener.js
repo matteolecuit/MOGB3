@@ -1,29 +1,21 @@
 class KeyboardListener {
     constructor() {
-        this.keyCodes = new Map([
-            [81, "left"],
-            [90, "up"],
-            [68, "right"],
-            [83, "down"],
-            [79, "a"],
-            [80, "b"]
-        ]);
+        this.keys = {};
 
-        this.listen = socket => {
-            var pressed = new Map();
-            this.keyCodes.forEach(code => pressed.set(code, false));
-            var handler = event => {
-                if (this.keyCodes.get(event.keyCode) !== undefined) {
-                    var down = event.type === "keydown";
-                    pressed.set(this.keyCodes.get(event.keyCode), down);
-                    event.preventDefault();
-                }
-                var inputs = {};
-                pressed.forEach((value, key) => inputs[key] = value);
-                socket.emit('inputs', inputs);
-            };
-            addEventListener("keydown", handler);
-            addEventListener("keyup", handler);
+        this.keyCodes = {
+            ArrowLeft: "left",
+            ArrowUp: "up",
+            ArrowRight: "right",
+            ArrowDown: "down",
+            w: "a",
+            Shift: "b"
         };
+
+        this.handler = event => {
+            if (event.key in this.keyCodes) this.keys[this.keyCodes[event.key]] = event.type === "keydown";
+        }
+
+        addEventListener("keydown", this.handler);
+        addEventListener("keyup", this.handler);
     }
 }

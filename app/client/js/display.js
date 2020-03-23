@@ -5,10 +5,24 @@ class Display {
         this.user = null;
         this.nickname = null;
         this.selectedRoom = null;
+        this.canvas = null;
 
         //
         // Header
         //
+
+        this.sendNotification = (type, text) => {
+            var notification = document.createElement("p");
+            notification.className = 'notif notif-' + type;
+            notification.innerHTML = text;
+
+            document.body.appendChild(notification);
+
+            setTimeout(() => {
+                var notif = document.getElementsByClassName('notif');
+                if (notif.length > 0) notif[0].remove();
+            }, 3000);
+        }
 
         this.resetScreen = () => {
             document.body.innerHTML = "";
@@ -46,7 +60,7 @@ class Display {
             document.body.appendChild(header);
 
             if (this.user) {
-                profilRound.style.backgroundImage = this.user.profilePicture;
+                profilRound.style.backgroundImage = 'url(../img/pfp' + this.user.pfp + '.png)';
                 profilRound.onclick = () => this.socket.emit('requestProfilePage', this.user.id);
 
                 var logOutBtn = document.createElement("button");
@@ -58,7 +72,7 @@ class Display {
                 header.appendChild(logOutBtn);
 
             } else {
-                profilRound.style.backgroundImage = 'url(../img/profile-default.png)';
+                profilRound.style.backgroundImage = 'url(../img/pfp0.png)';
                 profilRound.onclick = () => this.socket.emit('requestAuth');
 
                 var authButton = document.createElement("button");
@@ -84,6 +98,10 @@ class Display {
                     name: name,
                     password: password
                 });
+            } else if (!name || name.length <= 0 || name.length >= 15) {
+                this.sendNotification('error', 'ERROR : incorrect username');
+            } else if (!password || password.length <= 0) {
+                this.sendNotification('error', 'ERROR : incorrect password');
             }
         }
 
@@ -98,6 +116,12 @@ class Display {
                     name: name,
                     password: password
                 });
+            } else if (!name || name.length <= 0 || name.length >= 15) {
+                this.sendNotification('error', 'ERROR : incorrect username');
+            } else if (!password || password.length <= 0) {
+                this.sendNotification('error', 'ERROR : incorrect password');
+            } else if (password !== confirmPassword) {
+                this.sendNotification('error', 'ERROR : confirmation password does not match');
             }
         }
 
@@ -182,13 +206,39 @@ class Display {
         // Pofile
         //
 
+        this.updateUser = (user, selectedImg) => {
+            var newname = document.getElementById('nameInput').value;
+            var newpassword = document.getElementById('passwordInput').value;
+            var confirmPassword = document.getElementById('confirmPasswordInput').value;
+
+            if (!(!newname && !newpassword && !selectedImg && selectedImg !== 0) &&
+                (!newname || newname && newname.length > 0 && newname.length < 15) &&
+                ((!newpassword && !confirmPassword) || (newpassword && newpassword.length > 0 &&
+                    confirmPassword && confirmPassword.length > 0 && newpassword === confirmPassword))) {
+                this.socket.emit('requestUpdateUser', {
+                    id: user.id,
+                    newname: newname,
+                    newpassword: newpassword,
+                    newPfp: selectedImg
+                });
+            } else if (newname && (name.length <= 0 || name.length >= 15)) {
+                this.sendNotification('error', 'ERROR : incorrect new username');
+            } else if (newpassword && password.length <= 0) {
+                this.sendNotification('error', 'ERROR : incorrect new password');
+            } else if (newpassword !== confirmPassword) {
+                this.sendNotification('error', 'ERROR : confirmation password does not match');
+            } else if (!newname && !newpassword && !selectedImg) {
+                this.sendNotification('error', 'ERROR : no changes detected');
+            }
+        }
+
         this.showProfileScreen = user => {
             this.resetScreen();
             document.getElementById("profilRound").className = 'headerSelected';
 
             var container = document.createElement("div");
             container.id = "container";
-            container.className = 'column';
+            container.className = 'column heightMax';
 
             var title = document.createElement("p");
             title.id = "title";
@@ -202,9 +252,75 @@ class Display {
             subtitle.id = "subtitle";
             subtitle.innerHTML = "Everything about you in MOGB3.";
 
+            var profileContainer = document.createElement("div");
+            profileContainer.id = "profileContainer";
+
+            var profileInfos = document.createElement("p");
+            profileInfos.id = "profileInfos";
+            profileInfos.innerHTML =
+                "<p>Username : " + user.name + "</p>" +
+                "<p>PlayCount : " + user.playCount + "</p>" +
+                "<p>WinCount : " + user.winCount + "</p>" +
+                "<p>Experience : " + user.experience + "</p>" +
+                "<p>Score : " + user.score + "</p>";
+
+            var profileLeft = document.createElement("div");
+            profileLeft.id = "profileLeft";
+
+            var profileRight = document.createElement("div");
+            profileRight.id = "profileRight";
+
+            var selectedImg = null;
+            for (let i = 0; i < 16; i++) {
+                var profileImage = document.createElement("img");
+                profileImage.id = 'pfp' + i;
+                profileImage.src = "../img/pfp" + i + ".png";
+                profileImage.draggable = false;
+                profileImage.onclick = () => {
+                    Array.from(document.getElementsByClassName("imgSelected")).forEach(item => item.classList.remove("imgSelected"));
+                    document.getElementById('pfp' + i).className = 'imgSelected';
+                    selectedImg = i;
+                }
+
+                profileRight.appendChild(profileImage);
+            }
+
+            var nameInput = document.createElement("input");
+            nameInput.id = "nameInput";
+            nameInput.type = "text";
+            nameInput.placeholder = "New Username";
+            nameInput.maxLength = 15;
+
+            var passwordInput = document.createElement("input");
+            passwordInput.id = "passwordInput";
+            passwordInput.type = "password";
+            passwordInput.placeholder = "New Password";
+            passwordInput.maxLength = 256;
+            passwordInput.autocomplete = "new-password";
+
+            var confirmPasswordInput = document.createElement("input");
+            confirmPasswordInput.id = "confirmPasswordInput";
+            confirmPasswordInput.type = "password";
+            confirmPasswordInput.placeholder = "Confirm Password";
+            confirmPasswordInput.maxLength = 256;
+            confirmPasswordInput.autocomplete = "new-password";
+
+            var updateUserBtn = document.createElement("button");
+            updateUserBtn.id = "updateUserBtn";
+            updateUserBtn.innerHTML = "Update Profile";
+            updateUserBtn.onclick = () => this.updateUser(user, selectedImg);
+
             title.appendChild(logoImg);
             container.appendChild(title);
             container.appendChild(subtitle);
+            profileContainer.appendChild(profileInfos);
+            profileLeft.appendChild(nameInput);
+            profileLeft.appendChild(passwordInput);
+            profileLeft.appendChild(confirmPasswordInput);
+            profileContainer.appendChild(profileLeft);
+            profileContainer.appendChild(profileRight);
+            container.appendChild(profileContainer);
+            container.appendChild(updateUserBtn);
             document.body.appendChild(container);
         }
 
@@ -263,6 +379,8 @@ class Display {
                 this.nickname = name;
                 this.socket.emit('join', name);
                 this.getRoomList(this.socket);
+            } else {
+                this.sendNotification('error', 'ERROR : incorrect nickname');
             }
         }
 
@@ -320,16 +438,23 @@ class Display {
             this.socket.emit('requestRoomList');
         }
 
-        this.selectRoom = name => {
-            this.selectedRoom = name;
+        this.selectRoom = room => {
+
+            this.selectedRoom = room.name;
             Array.from(document.getElementsByClassName("selected")).forEach(item => item.classList.remove("selected"));
-            document.getElementById('joinRoom').classList.remove("unselectable");
-            document.getElementById(name).className = 'selected';
+            document.getElementById(room.name).className = 'selected';
+            
+            if (room.size > room.users.length) document.getElementById('joinRoom').classList.remove("unselectable");
+            else document.getElementById("joinRoom").className = 'unselectable';
+            
         }
 
         this.joinRoom = name => {
             this.selectedRoom = null;
             if (name) this.socket.emit('requestJoinRoom', name);
+            else {
+                this.sendNotification('error', 'ERROR : incorrect room name');
+            }
         }
 
         this.showRoomList = roomList => {
@@ -389,10 +514,6 @@ class Display {
             settingsBtn.innerHTML = "Settings";
             // settingsBtn.onclick = () => this.showSettings();
 
-            var ornementImg = document.createElement("img");
-            ornementImg.id = 'ornementImg';
-            ornementImg.src = "../img/ornement.png";
-
             roomsTableTheadTr.appendChild(roomsTableTheadTrTh1);
             roomsTableTheadTr.appendChild(roomsTableTheadTrTh2);
             roomsTableTheadTr.appendChild(roomsTableTheadTrTh3);
@@ -405,7 +526,6 @@ class Display {
             roomsOptions.appendChild(createRoomBtn);
             roomsOptions.appendChild(changeNickBtn);
             roomsOptions.appendChild(settingsBtn);
-            // roomsOptions.appendChild(ornementImg);
             roomsMenu.appendChild(roomsTable);
             roomsMenu.appendChild(roomsOptions);
             document.body.appendChild(roomsMenu);
@@ -413,13 +533,13 @@ class Display {
             roomList.forEach(room => {
                 var tr = document.createElement("tr");
                 tr.id = room.name;
-                tr.onclick = () => this.selectRoom(room.name);
+                tr.onclick = () => this.selectRoom(room);
                 var td1 = document.createElement("td");
                 td1.id = 'td1';
                 td1.innerHTML = room.name;
                 var td2 = document.createElement("td");
                 td2.id = 'td2';
-                td2.innerHTML = playerCount + '/∞';
+                td2.innerHTML = room.users.length + '/' + room.size;
                 var td3 = document.createElement("td");
                 td3.id = 'td3';
                 td3.innerHTML = 'No';
@@ -431,7 +551,7 @@ class Display {
         }
 
         //
-        // ChangeNick
+        // ChangeNickname
         //
 
         this.changeNick = () => {
@@ -440,6 +560,8 @@ class Display {
                 this.nickname = name;
                 this.socket.emit('changeNick', name);
                 this.getRoomList(this.socket);
+            } else {
+                this.sendNotification('error', 'ERROR : incorrect nickname');
             }
         }
 
@@ -453,7 +575,7 @@ class Display {
 
             var startTitle = document.createElement("p");
             startTitle.id = "title";
-            startTitle.innerHTML = "Change Nick";
+            startTitle.innerHTML = "Change Nickname";
 
             var inputContainer = document.createElement("div");
             inputContainer.id = "inputContainer";
@@ -493,6 +615,9 @@ class Display {
             this.selectedRoom = null;
             var name = document.getElementById('roomNameInput').value;
             if (name && name.length > 0 && name.length <= 35) this.socket.emit('requestCreateRoom', name);
+            else {
+                this.sendNotification('error', 'ERROR : incorrect room name');
+            }
         }
 
         this.showCreateRoom = () => {
@@ -567,8 +692,9 @@ class Display {
 
             var redTeamTable = document.createElement("table");
             redTeamTable.id = "redTeamTable";
+            redTeamTable.className = 'teamTable';
             var redTeamCaption = document.createElement("caption");
-            redTeamCaption.innerHTML = "Red Team";
+            redTeamCaption.innerHTML = "Red team";
             var redTeamBody = document.createElement("tbody");
             redTeamBody.id = "redTeamBody";
             redTeamBody.onclick = () => this.socket.emit('requestSelectTeam', {
@@ -576,21 +702,22 @@ class Display {
                 team: 'red'
             });
 
-            var spectators = document.createElement("table");
-            spectators.id = "spectators";
-            var spectatorsCaption = document.createElement("caption");
-            spectatorsCaption.innerHTML = "Spectators";
-            var spectatorsBody = document.createElement("tbody");
-            spectatorsBody.id = "spectatorsBody";
-            spectatorsBody.onclick = () => this.socket.emit('requestSelectTeam', {
+            var noTeam = document.createElement("table");
+            noTeam.id = "noTeam";
+            var noTeamsCaption = document.createElement("caption");
+            noTeamsCaption.innerHTML = "Choose your team";
+            var noTeamsBody = document.createElement("tbody");
+            noTeamsBody.id = "noTeamsBody";
+            noTeamsBody.onclick = () => this.socket.emit('requestSelectTeam', {
                 name: room.name,
-                team: 'spectator'
+                team: null
             });
 
             var blueTeamTable = document.createElement("table");
             blueTeamTable.id = "blueTeamTable";
+            blueTeamTable.className = 'teamTable';
             var blueTeamCaption = document.createElement("caption");
-            blueTeamCaption.innerHTML = "Blue Team";
+            blueTeamCaption.innerHTML = "Blue team";
             var blueTeamBody = document.createElement("tbody");
             blueTeamBody.id = "blueTeamBody";
             blueTeamBody.onclick = () => this.socket.emit('requestSelectTeam', {
@@ -600,10 +727,22 @@ class Display {
 
             room.users.forEach(user => {
                 var tr = document.createElement("tr");
-                tr.innerHTML = user.name;
+                if (user.team) {
+                    var pfpImg = document.createElement("img");
+                    pfpImg.className = 'pfpImg';
+                    pfpImg.src = "../img/pfp" + user.pfp + ".png";
+
+                    var trName = document.createElement("p");
+                    trName.innerHTML = user.name;
+
+                    tr.appendChild(pfpImg);
+                    tr.appendChild(trName);
+                }
+                else tr.innerHTML = user.name;
+
                 if (user.team === 'red') redTeamBody.appendChild(tr);
                 else if (user.team === 'blue') blueTeamBody.appendChild(tr);
-                else if (user.team === 'spectator') spectatorsBody.appendChild(tr);
+                else if (user.team === null) noTeamsBody.appendChild(tr);
             });
 
             var leaveButton = document.createElement("button");
@@ -611,21 +750,36 @@ class Display {
             leaveButton.innerHTML = "Leave";
             leaveButton.onclick = () => this.socket.emit('requestLeaveRoom', room.name);
 
+            var startButton = null;
+            startButton = document.createElement("button");
+            startButton.id = "startRoomButton";
+            startButton.innerHTML = "Start";
+            startButton.onclick = () => this.socket.emit('requestStartGame', room.name);
+            if (!room.users.find(user => user.team === 'red') || !room.users.find(user => user.team === 'blue')) {
+                startButton.className = "unselectable";
+            }
+
             redTeamTable.appendChild(redTeamCaption);
             redTeamTable.appendChild(redTeamBody);
-            spectators.appendChild(spectatorsCaption);
-            spectators.appendChild(spectatorsBody);
+            noTeam.appendChild(noTeamsCaption);
+            noTeam.appendChild(noTeamsBody);
             blueTeamTable.appendChild(blueTeamCaption);
             blueTeamTable.appendChild(blueTeamBody);
             tableContainer.appendChild(redTeamTable);
-            tableContainer.appendChild(spectators);
+            tableContainer.appendChild(noTeam);
             tableContainer.appendChild(blueTeamTable);
             roomMenu.appendChild(roomTitle);
             roomMenu.appendChild(startGameButtonContainer);
             roomMenu.appendChild(tableContainer);
+            roomMenu.appendChild(startButton);
             roomMenu.appendChild(leaveButton);
             document.body.appendChild(roomMenu);
         };
+
+        this.startGame = room => {
+            document.body.innerHTML = "";
+            this.canvas = new CanvasDisplay();
+        }
 
         //
         // Rankings
