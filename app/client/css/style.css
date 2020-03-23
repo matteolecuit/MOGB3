@@ -1,0 +1,637 @@
+html {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+}
+
+html body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  font-family: sans-serif;
+  background-color: #88f;
+}
+
+html body canvas {
+  margin: auto;
+  background: #ccf;
+  -webkit-box-shadow: 0px 0px 16px 0px #000;
+          box-shadow: 0px 0px 16px 0px #000;
+}
+
+html body .notif {
+  position: absolute;
+  top: 64px;
+  left: 0;
+  padding: 8px 16px;
+  background: #fff;
+  color: #000;
+  z-index: 999;
+}
+
+html body .notif-info {
+  background: #080;
+  color: #fff;
+}
+
+html body .notif-error {
+  background: #800;
+  color: #fff;
+}
+
+html body header {
+  width: 100%;
+  position: fixed;
+  padding: 0 4px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  background-color: #222;
+  -webkit-box-shadow: 0px 0px 4px 0px #000;
+          box-shadow: 0px 0px 4px 0px #000;
+}
+
+html body header #profilRound {
+  width: 64px;
+  height: 64px;
+  margin: 8px;
+  border-radius: 32px;
+  border: none;
+  background-position: center;
+}
+
+html body header #profilRound:hover {
+  border: #ccf solid 3px;
+}
+
+html body header button {
+  margin: auto 8px;
+  padding: 8px;
+  color: #ccf;
+  background-color: transparent;
+  border: none;
+  border-bottom: transparent solid 3px;
+  font-size: 1em;
+  cursor: pointer;
+}
+
+html body header button:hover {
+  border-bottom: #ccf solid 3px;
+}
+
+html body header button:focus {
+  outline: none;
+}
+
+html body header .headerSelected {
+  border-bottom: #ccf solid 3px;
+}
+
+html body header .rightElement {
+  margin: auto 16px auto auto;
+  padding: 8px;
+  color: #ccf;
+  font-size: 1em;
+}
+
+html body #container {
+  margin: auto;
+  padding: 32px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  background-color: #fff;
+  -webkit-box-shadow: 0px 0px 2px 0px #000;
+          box-shadow: 0px 0px 2px 0px #000;
+}
+
+html body #container #title {
+  width: 100%;
+  font-size: 2em;
+  margin: 16px auto;
+  border-bottom: 1px solid #ccf;
+}
+
+html body #container #title #logoImg {
+  width: 32px;
+  height: 32px;
+  float: right;
+  -ms-interpolation-mode: nearest-neighbor;
+      image-rendering: -webkit-optimize-contrast;
+      image-rendering: -moz-crisp-edges;
+      image-rendering: -o-pixelated;
+      image-rendering: pixelated;
+}
+
+html body #container #subtitle {
+  width: 100%;
+  font-size: 1.5em;
+  margin: 8px auto;
+  text-align: center;
+}
+
+html body #container #profileContainer {
+  width: 512px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+  margin: 8px;
+}
+
+html body #container #profileContainer #profileInfos {
+  width: 512px;
+  margin: 32px 0 64px 0;
+  background-color: #f8f8ff;
+  border: 1px solid #ccf;
+}
+
+html body #container #profileContainer #profileInfos p {
+  text-align: center;
+}
+
+html body #container #profileContainer #profileLeft {
+  width: 256px;
+}
+
+html body #container #profileContainer #profileRight {
+  width: 256px;
+  height: 256px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+}
+
+html body #container #profileContainer #profileRight img {
+  width: 64px;
+  height: 64px;
+  margin: 0;
+  cursor: pointer;
+}
+
+html body #container #profileContainer #profileRight .imgSelected {
+  -webkit-box-shadow: 0px 0px 8px 4px #000;
+          box-shadow: 0px 0px 8px 4px #000;
+  z-index: 2;
+}
+
+html body #container .formContainer {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  margin: auto 32px;
+}
+
+html body #container .formContainer .formTitle {
+  width: 100%;
+  font-size: 1.5em;
+  margin: 8px auto;
+  text-align: center;
+}
+
+html body #container .formContainer .formBtn {
+  margin: 16px;
+}
+
+html body #container .news {
+  width: 512px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  margin: 16px 0;
+  padding: 32px;
+  background-color: #f8f8ff;
+  border: 1px solid #ccf;
+}
+
+html body #container .news .title {
+  margin: 16px;
+  font-size: 1.5em;
+  border-bottom: 1px solid #88c;
+  text-align: center;
+}
+
+html body #container .news .date {
+  font-size: 0.75em;
+  color: #88c;
+  text-align: right;
+}
+
+html body #container .news .content {
+  margin: 16px;
+}
+
+html body #container button {
+  margin: 16px 0 16px 16px;
+  padding: 8px 32px;
+  border: none;
+  font-size: 1em;
+  color: #fff;
+  background-color: #88f;
+  border-radius: 4px;
+  -webkit-transition: .3s;
+  transition: .3s;
+  cursor: pointer;
+}
+
+html body #container button:hover {
+  color: #000;
+  background-color: #fff;
+  -webkit-box-shadow: 0px 0px 0px 2px #88f;
+          box-shadow: 0px 0px 0px 2px #88f;
+}
+
+html body #container button:focus {
+  outline: none;
+}
+
+html body #container button.unselectable {
+  color: #fff;
+  background-color: #ccf;
+  -webkit-box-shadow: none;
+          box-shadow: none;
+  pointer-events: none;
+  cursor: auto;
+}
+
+html body #container #cancelButton {
+  margin: 16px 0;
+}
+
+html body #container #roomsTable {
+  width: 386px;
+  height: 504px;
+  margin-right: 32px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+}
+
+html body #container #roomsTable caption {
+  padding: 4px 0;
+  font-size: 1.5em;
+  border-bottom: 1px solid #ccf;
+  text-align: left;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+html body #container #roomsTable caption #roomListInfos {
+  margin: 0 0 0 auto;
+  text-align: right;
+  font-size: 0.75em;
+}
+
+html body #container #roomsTable tr {
+  height: 20px;
+  padding: 8px 16px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+}
+
+html body #container #roomsTable thead {
+  padding: 4px 0 0 0;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+}
+
+html body #container #roomsTable thead tr {
+  width: 100%;
+  margin: 0 8px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+}
+
+html body #container #roomsTable thead tr th {
+  padding: 0;
+  text-align: left;
+}
+
+html body #container #roomsTable thead tr #th1 {
+  width: 160px;
+}
+
+html body #container #roomsTable thead tr #th2 {
+  width: 64px;
+}
+
+html body #container #roomsTable thead tr #th3 {
+  width: 48px;
+}
+
+html body #container #roomsTable tbody {
+  width: 384px;
+  height: 432px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  background-color: #f8f8ff;
+  border: 1px solid #ccf;
+}
+
+html body #container #roomsTable tbody tr {
+  margin: 8px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  border-radius: 4px;
+  color: #fff;
+  background-color: #88f;
+  cursor: pointer;
+  -webkit-transition: .2s;
+  transition: .2s;
+}
+
+html body #container #roomsTable tbody tr td {
+  height: 20px;
+  padding: 0;
+  text-overflow: clip;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+html body #container #roomsTable tbody tr #td1 {
+  width: 180px;
+}
+
+html body #container #roomsTable tbody tr #td2 {
+  width: 64px;
+}
+
+html body #container #roomsTable tbody tr #td3 {
+  width: 32px;
+}
+
+html body #container #roomsTable tbody tr:hover {
+  color: #000;
+  background-color: #fff;
+  -webkit-box-shadow: 0px 0px 0px 2px #88f;
+          box-shadow: 0px 0px 0px 2px #88f;
+}
+
+html body #container #roomsTable tbody tr.selected {
+  color: #000;
+  background-color: #fff;
+  -webkit-box-shadow: 0px 0px 0px 2px #88f;
+          box-shadow: 0px 0px 0px 2px #88f;
+}
+
+html body #container #inputContainer {
+  width: 100%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+html body #container input {
+  margin: 16px auto;
+  padding: 8px;
+  font-size: 1em;
+  border: none;
+  border-bottom: 1px solid #ccf;
+}
+
+html body #container input:focus {
+  outline: none;
+}
+
+html body #container ::-webkit-input-placeholder {
+  color: #88c;
+  opacity: 1;
+}
+
+html body #container :-ms-input-placeholder {
+  color: #88c;
+  opacity: 1;
+}
+
+html body #container ::-ms-input-placeholder {
+  color: #88c;
+  opacity: 1;
+}
+
+html body #container ::placeholder {
+  color: #88c;
+  opacity: 1;
+}
+
+html body #container #roomsOptions {
+  width: 128px;
+}
+
+html body #container #roomsOptions button {
+  width: 100%;
+  margin: 4px auto;
+  padding: 8px;
+}
+
+html body #container #tableContainer {
+  margin: 0 auto;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+html body #container #tableContainer table {
+  width: 240px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+}
+
+html body #container #tableContainer table caption {
+  width: 100%;
+  font-size: 1.25em;
+}
+
+html body #container #tableContainer table tr {
+  margin: 8px auto;
+  text-align: center;
+}
+
+html body #container #tableContainer table tbody {
+  width: 240px;
+  height: 272px;
+  margin: 16px 0;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  overflow-y: auto;
+  overflow-x: hidden;
+  background-color: #f8f8ff;
+  border: 1px solid #ccf;
+}
+
+html body #container #tableContainer table tbody:hover {
+  background-color: #ccf;
+}
+
+html body #container #tableContainer .teamTable tr {
+  width: 238px;
+  height: 68px;
+  margin: 0;
+  padding: 0 8px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+html body #container #tableContainer .teamTable tr .pfpImg {
+  width: 64px;
+  height: 64px;
+  margin: 2px;
+  border-radius: 32px;
+}
+
+html body #container #tableContainer .teamTable tr p {
+  text-align: center;
+  margin: auto;
+}
+
+html body #container #leaveButton {
+  width: 128px;
+  margin: 0 auto;
+}
+
+html body #container #startRoomButton {
+  width: 128px;
+  margin: 0 auto 16px;
+}
+
+html body #container #startRoomButton.unselectable {
+  color: #fff;
+  background-color: #ccf;
+  pointer-events: none;
+  cursor: auto;
+}
+
+html body #container #startGameButtonContainer {
+  width: 100%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+html body #container #startGameButtonContainer #startGameButton {
+  margin: 4px auto;
+}
+
+html body #container #rankings {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+}
+
+html body #container #rankings thead tr {
+  padding: 8px 0;
+  margin: 4px;
+}
+
+html body #container #rankings thead tr td {
+  width: 120px;
+  height: 20px;
+  margin: 0;
+  padding: 0;
+  text-align: center;
+}
+
+html body #container #rankings tbody {
+  background-color: #f8f8ff;
+  border: 1px solid #ccf;
+}
+
+html body #container #rankings tbody tr {
+  padding: 8px 0;
+  margin: 4px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  border-radius: 4px;
+  color: #fff;
+  background-color: #88f;
+  -webkit-transition: .2s;
+  transition: .2s;
+}
+
+html body #container #rankings tbody tr td {
+  width: 120px;
+  height: 20px;
+  padding: 0;
+  text-overflow: clip;
+  white-space: nowrap;
+  overflow: hidden;
+  text-align: center;
+}
+
+html body #container #rankings tbody tr .tableName {
+  text-align: left;
+}
+
+html body #container #rankings tbody tr:hover {
+  color: #000;
+  background-color: #ccf;
+}
+
+html body #container .resume {
+  width: 512px;
+}
+
+html body #container.column {
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+}
+
+html body #container.heightMax {
+  height: -webkit-fit-content;
+  height: -moz-fit-content;
+  height: fit-content;
+  margin: 128px auto 64px auto;
+}
+
+html body hr {
+  border: 1px solid #ccf;
+}
+/*# sourceMappingURL=style.css.map */

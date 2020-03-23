@@ -1,0 +1,548 @@
+$color-primary: #88f;
+$color-secondary: #ccf;
+$color-bg-primary: #f8f8ff;
+$color-bg-secondary: #222;
+$color-white: #fff;
+$color-grey: #88c;
+$color-black: #000;
+
+html {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+
+    body {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        display: flex;
+        font-family: sans-serif;
+        background-color: $color-primary;
+
+        canvas {
+            margin: auto;
+            background: $color-secondary;
+            box-shadow: 0px 0px 16px 0px $color-black;
+        }
+
+        .notif {
+            position: absolute;
+            top: 64px;
+            left: 0;
+            padding: 8px 16px;
+            background: #fff;
+            color: #000;
+            z-index: 999;
+        }
+
+        .notif-info {
+            background: #080;
+            color: #fff;
+        }
+
+        .notif-error {
+            background: #800;
+            color: #fff;
+        }
+
+        header {
+            width: 100%;
+            position: fixed;
+            padding: 0 4px;
+            display: flex;
+            background-color: $color-bg-secondary;
+            box-shadow: 0px 0px 4px 0px $color-black;
+
+            #profilRound {
+                width: 64px;
+                height: 64px;
+                margin: 8px;
+                border-radius: 32px;
+                border: none;
+                background-position: center;
+            }
+
+            #profilRound:hover {
+                border: $color-secondary solid 3px;
+            }
+
+            button {
+                margin: auto 8px;
+                padding: 8px;
+                color: $color-secondary;
+                background-color: transparent;
+                border: none;
+                border-bottom: transparent solid 3px;
+                font-size: 1em;
+                cursor: pointer;
+            }
+
+            button:hover {
+                border-bottom: $color-secondary solid 3px;
+            }
+
+            button:focus {
+                outline: none;
+            }
+
+            .headerSelected {
+                border-bottom: $color-secondary solid 3px;
+            }
+
+            .rightElement {
+                margin: auto 16px auto auto;
+                padding: 8px;
+                color: $color-secondary;
+                font-size: 1em;
+            }
+        }
+
+        #container {
+            margin: auto;
+            padding: 32px;
+            display: flex;
+            background-color: $color-white;
+            box-shadow: 0px 0px 2px 0px $color-black;
+
+            #title {
+                width: 100%;
+                font-size: 2em;
+                margin: 16px auto;
+                border-bottom: 1px solid $color-secondary;
+
+                #logoImg {
+                    width: 32px;
+                    height: 32px;
+                    float: right;
+                    image-rendering: pixelated;
+                }
+            }
+
+            #subtitle {
+                width: 100%;
+                font-size: 1.5em;
+                margin: 8px auto;
+                text-align: center;
+            }
+
+            #profileContainer {
+                width: 512px;
+                display: flex;
+                flex-wrap: wrap;
+                margin: 8px;
+
+                #profileInfos {
+                    width: 512px;
+                    margin: 32px 0 64px 0;
+
+                    background-color: $color-bg-primary;
+                    border: 1px solid $color-secondary;
+                    
+                    p {
+                        text-align: center;
+                    }
+                }
+
+                #profileLeft {
+                    width: 256px;
+                }
+
+                #profileRight {
+                    width: 256px;
+                    height: 256px;
+                    display: flex;
+                    flex-wrap: wrap;
+
+                    img {
+                        width: 64px;
+                        height: 64px;
+                        margin: 0;
+                        cursor: pointer;
+                    }
+                    
+                    .imgSelected {
+                        box-shadow: 0px 0px 8px 4px $color-black;
+                        z-index: 2;
+                    }
+                }
+            }
+
+            .formContainer {
+                display: flex;
+                flex-direction: column;
+                margin: auto 32px;
+
+                .formTitle {
+                    width: 100%;
+                    font-size: 1.5em;
+                    margin: 8px auto;
+                    text-align: center;
+                }
+                
+                .formBtn {
+                    margin: 16px;
+                }
+            }
+
+
+            .news {
+                width: 512px;
+                display: flex;
+                flex-direction: column;
+                margin: 16px 0;
+                padding: 32px;
+                background-color: $color-bg-primary;
+                border: 1px solid $color-secondary;
+
+                .title {
+                    margin: 16px;
+                    font-size: 1.5em;
+                    border-bottom: 1px solid $color-grey;
+                    text-align: center;
+                }
+
+                .date {
+                    font-size: 0.75em;
+                    color: $color-grey;
+                    text-align: right;
+                }
+
+                .content {
+                    margin: 16px;
+                }
+            }
+
+            button {
+                margin: 16px 0 16px 16px;
+                padding: 8px 32px;
+                border: none;
+                font-size: 1em;
+                color: $color-white;
+                background-color: $color-primary;
+                border-radius: 4px;
+                transition: .3s;
+                cursor: pointer;
+            }
+
+            button:hover {
+                color: $color-black;
+                background-color: $color-white;
+                box-shadow: 0px 0px 0px 2px $color-primary;
+            }
+
+            button:focus {
+                outline: none;
+            }
+
+            button.unselectable {
+                color: $color-white;
+                background-color: $color-secondary;
+                box-shadow: none;
+                pointer-events: none;
+                cursor: auto;
+            }
+
+            #cancelButton {
+                margin: 16px 0;
+            }
+
+            #roomsTable {
+                width: 386px;
+                height: 504px;
+                margin-right: 32px;
+                display: flex;
+                flex-direction: column;
+
+                caption {
+                    padding: 4px 0;
+                    font-size: 1.5em;
+                    border-bottom: 1px solid $color-secondary;
+                    text-align: left;
+                    display: flex;
+
+
+                    #roomListInfos {
+                        margin: 0 0 0 auto;
+                        text-align: right;
+                        font-size: 0.75em;
+                    }
+                }
+
+                tr {
+                    height: 20px;
+                    padding: 8px 16px;
+                    display: flex;
+                    flex-wrap: wrap;
+                }
+
+                thead {
+                    padding: 4px 0 0 0;
+                    display: flex;
+                    flex-wrap: wrap;
+
+                    tr {
+                        width: 100%;
+                        margin: 0 8px;
+                        display: flex;
+                        justify-content: space-between;
+
+                        th {
+                            padding: 0;
+                            text-align: left;
+                        }
+
+                        #th1 {
+                            width: 160px;
+                        }
+
+                        #th2 {
+                            width: 64px;
+                        }
+
+                        #th3 {
+                            width: 48px;
+                        }
+                    }
+                }
+
+                tbody {
+                    width: 384px;
+                    height: 432px;
+                    overflow-y: auto;
+                    overflow-x: hidden;
+                    background-color: $color-bg-primary;
+                    border: 1px solid $color-secondary;
+
+                    tr {
+                        margin: 8px;
+                        display: flex;
+                        justify-content: space-between;
+                        border-radius: 4px;
+                        color: $color-white;
+                        background-color: $color-primary;
+                        cursor: pointer;
+                        transition: .2s;
+
+                        td {
+                            height: 20px;
+                            padding: 0;
+                            text-overflow: clip;
+                            white-space: nowrap;
+                            overflow: hidden;
+                        }
+
+                        #td1 {
+                            width: 180px;
+                        }
+
+                        #td2 {
+                            width: 64px;
+                        }
+
+                        #td3 {
+                            width: 32px;
+                        }
+                    }
+
+                    tr:hover {
+                        color: $color-black;
+                        background-color: $color-white;
+                        box-shadow: 0px 0px 0px 2px $color-primary;
+                    }
+
+                    tr.selected {
+                        color: $color-black;
+                        background-color: $color-white;
+                        box-shadow: 0px 0px 0px 2px $color-primary;
+                    }
+                }
+            }
+
+            #inputContainer {
+                width: 100%;
+                display: flex;
+            }
+            
+            input {
+                margin: 16px auto;
+                padding: 8px;
+                font-size: 1em;
+                border: none;
+                border-bottom: 1px solid $color-secondary;
+            }
+
+            input:focus {
+                outline: none;
+            }
+
+            ::placeholder {
+                color: $color-grey;
+                opacity: 1;
+            }
+
+            #roomsOptions {
+                width: 128px;
+
+                button {
+                    width: 100%;
+                    margin: 4px auto;
+                    padding: 8px;
+                }
+            }
+
+            #tableContainer {
+                margin: 0 auto;
+                display: flex;
+
+                table {
+                    width: 240px;
+                    display: flex;
+                    flex-wrap: wrap;
+
+                    caption {
+                        width: 100%;
+                        font-size: 1.25em;
+                    }
+
+                    tr {
+                        margin: 8px auto;
+                        text-align: center;
+                    }
+
+                    tbody {
+                        width: 240px;
+                        height: 272px;
+                        margin: 16px 0;
+                        display: flex;
+                        flex-direction: column;
+                        overflow-y: auto;
+                        overflow-x: hidden;
+                        background-color: $color-bg-primary;
+                        border: 1px solid $color-secondary;
+                    }
+
+                    tbody:hover {
+                        background-color: $color-secondary;
+                    }
+                }
+                
+                .teamTable tr {
+                    width: 238px;
+                    height: 68px;
+                    margin: 0;
+                    padding: 0 8px;
+                    display: flex;
+
+                    .pfpImg {
+                        width: 64px;
+                        height: 64px;
+                        margin: 2px;
+                        border-radius: 32px;
+                    }
+
+                    p {
+                        text-align: center;
+                        margin: auto;
+                    }
+                }
+            }
+
+            #leaveButton {
+                width: 128px;
+                margin: 0 auto;
+            }
+
+            #startRoomButton {
+                width: 128px;
+                margin: 0 auto 16px;
+            }
+            
+            #startRoomButton.unselectable {
+                color: $color-white;
+                background-color: $color-secondary;
+                pointer-events: none;
+                cursor: auto;
+            }
+
+            #startGameButtonContainer {
+                width: 100%;
+                display: flex;
+
+                #startGameButton {
+                    margin: 4px auto;
+                }
+            }
+
+            #rankings {
+                display: flex;
+                flex-direction: column;
+
+                thead {
+                    tr {
+                        padding: 8px 0;
+                        margin: 4px;
+
+                        td {
+                            width: 120px;
+                            height: 20px;
+                            margin: 0;
+                            padding: 0;
+                            text-align: center;
+                        }
+                    }
+                }
+
+                tbody {
+                    background-color: $color-bg-primary;
+                    border: 1px solid $color-secondary;
+
+                    tr {
+                        padding: 8px 0;
+                        margin: 4px;
+                        display: flex;
+                        border-radius: 4px;
+                        color: $color-white;
+                        background-color: $color-primary;
+                        transition: .2s;
+
+                        td {
+                            width: 120px;
+                            height: 20px;
+                            padding: 0;
+                            text-overflow: clip;
+                            white-space: nowrap;
+                            overflow: hidden;
+                            text-align: center;
+                        }
+
+                        .tableName {
+                            text-align: left;
+                        }
+                    }
+
+                    tr:hover {
+                        color: $color-black;
+                        background-color: $color-secondary;
+                    }
+                }
+            }
+
+            .resume {
+                width: 512px;
+            }
+        }
+
+        #container.column {
+            flex-direction: column;
+        }
+
+        #container.heightMax {
+            height: fit-content;
+            margin: 128px auto 64px auto;
+        }
+
+        hr {
+            border: 1px solid $color-secondary;
+        }
+    }
+}
