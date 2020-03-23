@@ -15,7 +15,7 @@ pub fn user_manager_register(
     use crate::schema::users::dsl::users;
 
     let conn: &PgConnection = &pool.get().unwrap();
-    let user = User::new(&user_data.email, &user_data.password, &user_data.username);
+    let user = User::new(&user_data.email, &user_data.password, &user_data.username, user_data.profile_picture);
 
     let inserted_user: User = diesel::insert_into(users).values(&user).get_result(conn)?;
     return Ok(inserted_user.into());

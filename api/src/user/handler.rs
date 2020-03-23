@@ -19,7 +19,7 @@ impl FromRequest for LoggedUser {
             return Ok(user);
         }
 
-        Ok(LoggedUser { email: None })
+        Ok(LoggedUser { email: None})
     }
 }
 
