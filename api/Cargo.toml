@@ -15,7 +15,7 @@ juniper = { git = "https://github.com/graphql-rust/juniper.git"}
 futures = "0.1.29"
 uuid = { version = "0.7", features = ["serde", "v4"] }
 derive_more = "0.15.0"
-serde = "1.0.102"
+serde = "1.0.105"
 serde_derive = "1.0.102"
 serde_json = "1.0.41"
 chrono = { version = "0.4.6", features = ["serde"] }
