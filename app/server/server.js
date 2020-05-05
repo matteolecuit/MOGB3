@@ -13,6 +13,11 @@ var api = require('./lib/api');
 var User = require('./lib/user');
 var Room = require('./lib/room');
 
+const GAME_SIZE = {
+    x: 640,
+    y: 480
+}
+
 app.use(express.static(__dirname + '/../client'));
 
 var loggedUsers = new Map();
@@ -156,8 +161,8 @@ io.on('connection', socket => {
 
     var getRandomPos = size => {
         return {
-            x:Math.floor(Math.random() * (480 - size.x)),
-            y:Math.floor(Math.random() * (270 - size.y))
+            x:Math.floor(Math.random() * (GAME_SIZE.x - size.x)),
+            y:Math.floor(Math.random() * (GAME_SIZE.y - size.y))
         }
     }
 
@@ -169,8 +174,8 @@ io.on('connection', socket => {
             if (bullet.active) bullets.push(bullet)
         }));
         bullets.forEach(bullet => {
-            if (bullet.pos.x > 480 || bullet.pos.x + bullet.size.x < 0 ||
-                bullet.pos.y > 270 || bullet.pos.y + bullet.size.y < 0
+            if (bullet.pos.x > GAME_SIZE.x || bullet.pos.x + bullet.size.x < 0 ||
+                bullet.pos.y > GAME_SIZE.y || bullet.pos.y + bullet.size.y < 0
             ) bullet.active = false;
             else {
                 bullet.pos.x += bullet.dir.x * bullet.speed.x;
@@ -254,8 +259,8 @@ io.on('connection', socket => {
                     player.inputLagA = 60 / 6;
                 }
 
-                player.pos.x = player.pos.x < 0 ? 0 : player.pos.x > 480 - 16 ? 480 - 16 : player.pos.x;
-                player.pos.y = player.pos.y < 0 ? 0 : player.pos.y > 270 - 16 ? 270 - 16 : player.pos.y;
+                player.pos.x = player.pos.x < 0 ? 0 : player.pos.x > GAME_SIZE.x - 16 ? GAME_SIZE.x - 16 : player.pos.x;
+                player.pos.y = player.pos.y < 0 ? 0 : player.pos.y > GAME_SIZE.y - 16 ? GAME_SIZE.y - 16 : player.pos.y;
             }
         });
 

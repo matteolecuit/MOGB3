@@ -1,27 +1,99 @@
 class CanvasDisplay {
-    constructor() {
+    constructor(nickname) {
         this.frame = 0;
-        this.zoom = 1;
         this.debugMode = true;
+        this.nickname = nickname;
+
+        this.spriteImg = document.createElement("img");
+        this.spriteImg.src = "../img/sprite.png";
+        this.tileImg = document.createElement("img");
+        this.tileImg.src = "../img/tile.png";
 
         this.update = game => {
-            this.frame++;
+            let cx = this.cx;
+            let zoom = 3;
+            cx.lineWidth = zoom;
+            cx.save();
+            cx.scale(zoom, zoom);
 
-            this.cx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+            let player = game.users.find(user => user.name === this.nickname);
 
-            this.cx.fillStyle = '#0f0';
+            // viewport
+            let viewport = {};
+            viewport.width = 640;
+            viewport.height = 480;
+            viewport.top = -player.pos.x;
+            viewport.left = -player.pos.y;
+            viewport.xOffset = viewport.top % 1;
+            viewport.yOffset = viewport.left % 1;
+
+            // background
+            cx.fillStyle = '#1122';
+            cx.fillRect(0, 0, this.canvas.width / zoom, this.canvas.height / zoom);
+
+            cx.translate(
+                this.canvas.width / zoom / 2 + viewport.top,
+                this.canvas.height / zoom / 2 + viewport.left
+            );
+
+            cx.fillStyle = '#222';
+            cx.fillRect(
+                0, 0,
+                viewport.width, viewport.height
+            );
+            for (let x = 0; x < viewport.width; x+=16) {
+                for (let y = 0; y < viewport.height; y+=16) {
+                    cx.drawImage(this.tileImg,
+                        0, 0, 16, 16,
+                        x, y, 16, 16,
+                    );
+                }
+            }
+
+            //bullets
+            cx.fillStyle = '#fff';
+            cx.strokeStyle = '#0ff';
             game.bullets.forEach(bullet => {
-                this.cx.fillRect(bullet.pos.x * this.zoom, bullet.pos.y * this.zoom, bullet.size.x * this.zoom, bullet.size.y * this.zoom);
+                cx.beginPath();
+                cx.arc(
+                    bullet.pos.x + bullet.size.x / 2,
+                    bullet.pos.y + bullet.size.y / 2,
+                    bullet.size.x / 2,
+                    0, 2 * Math.PI
+                );
+                cx.fill();
+                cx.stroke();
             });
             
+            //players
             game.users.forEach(user => {
-                this.cx.fillStyle = user.active ? user.team === 'blue' ? '#00f' : '#f00' : '#8888';
-                this.cx.fillRect(user.pos.x * this.zoom, user.pos.y * this.zoom, user.size.x * this.zoom, user.size.y * this.zoom);
-                this.cx.fillStyle = "#000";
-                this.cx.textAlign = 'center';
-                this.cx.font = 10 * this.zoom + 'px serif';
-                this.cx.fillText(user.name, (user.pos.x + user.size.x / 2) * this.zoom, (user.pos.y - 8) * this.zoom);
+                let posX = 1;
+                if (user.dir.x === 0) {
+                    if (user.dir.y === -1) posX = 3;
+                    else posX = 1;
+                }
+                else if (user.dir.x === -1) posX = 0;
+                else if (user.dir.x === 1) posX = 2;
+                cx.globalAlpha = user.active ? 1 : 0.25;
+                cx.drawImage(this.spriteImg,
+                    posX * 16, 0, 16, 16,
+                    user.pos.x, user.pos.y,
+                    user.size.x, user.size.y,
+                );
+                cx.globalAlpha = 1;
+
+                cx.fillStyle = "#fff";
+                cx.textAlign = 'center';
+                cx.font = 12 + 'px sans-serif';
+                cx.fillText(user.name,
+                    user.pos.x + user.size.x / 2,
+                    user.pos.y - 8
+                );
             });
+
+            this.frame++;
+
+            cx.restore();
         };
 
         this.flipHorizontally = around => {
@@ -30,35 +102,14 @@ class CanvasDisplay {
             this.cx.translate(-around, 0);
         };
 
-        this.resize = () => {
-            if (innerWidth >= 1920 && innerHeight >= 1080) {
-                this.zoom = 4;
-                this.cx.scale(this.zoom, this.zoom);
-                this.canvas.width = 1920;
-                this.canvas.height = 1080;
-            } else if (innerWidth >= 1440 && innerHeight >= 810) {
-                this.zoom = 3;
-                this.cx.scale(this.zoom, this.zoom);
-                this.canvas.width = 1440;
-                this.canvas.height = 810;
-            } else if (innerWidth >= 960 && innerHeight >= 540) {
-                this.zoom = 2;
-                this.cx.scale(this.zoom, this.zoom);
-                this.canvas.width = 960;
-                this.canvas.height = 540;
-            } else {
-                this.zoom = 1;
-                this.cx.scale(this.zoom, this.zoom);
-                this.canvas.width = 480;
-                this.canvas.height = 270;
-            }
-            this.cx.imageSmoothingEnabled = false;
-        };
-
         this.canvas = document.createElement('canvas');
         this.cx = this.canvas.getContext('2d');
+        this.resize = () => {
+            this.canvas.width = innerWidth;
+            this.canvas.height = innerHeight;
+            this.cx.imageSmoothingEnabled = false;
+        }
         this.resize();
-        
         window.addEventListener('resize', this.resize);
         document.body.appendChild(this.canvas);
     }

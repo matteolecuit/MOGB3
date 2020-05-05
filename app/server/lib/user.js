@@ -20,8 +20,8 @@ class User {
             y:16
         };
         this.pos = {
-            x:Math.floor(Math.random() * (480 - this.size.x)),
-            y:Math.floor(Math.random() * (270 - this.size.y))
+            x:Math.floor(Math.random() * (640 - this.size.x)),
+            y:Math.floor(Math.random() * (480 - this.size.y))
         };
     }
 }

@@ -47,6 +47,7 @@ module.exports = {
             team: user.team,
             active: user.active,
             pos: user.pos,
+            dir: user.dir,
             size: user.size
         }));
         var bulletList = [];

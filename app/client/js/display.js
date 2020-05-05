@@ -778,7 +778,7 @@ class Display {
 
         this.startGame = room => {
             document.body.innerHTML = "";
-            this.canvas = new CanvasDisplay();
+            this.canvas = new CanvasDisplay(this.nickname);
         }
 
         //
