@@ -17,7 +17,7 @@ uuid = { version = "0.7", features = ["serde", "v4"] }
 derive_more = "0.15.0"
 serde = "1.0.102"
 serde_derive = "1.0.102"
-serde_json = "1.0.41"
+serde_json = "1.0.53"
 chrono = { version = "0.4.6", features = ["serde"] }
 rand = "0.7.2"
 argon2rs = "0.2.5"
