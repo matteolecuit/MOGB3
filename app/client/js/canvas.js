@@ -4,8 +4,10 @@ class CanvasDisplay {
         this.debugMode = true;
         this.nickname = nickname;
 
-        this.spriteImg = document.createElement("img");
-        this.spriteImg.src = "../img/sprite.png";
+        this.redImg = document.createElement("img");
+        this.redImg.src = "../img/red.png";
+        this.blueImg = document.createElement("img");
+        this.blueImg.src = "../img/blue.png";
         this.tileImg = document.createElement("img");
         this.tileImg.src = "../img/tile.png";
 
@@ -75,7 +77,7 @@ class CanvasDisplay {
                 else if (user.dir.x === -1) posX = 0;
                 else if (user.dir.x === 1) posX = 2;
                 cx.globalAlpha = user.active ? 1 : 0.25;
-                cx.drawImage(this.spriteImg,
+                cx.drawImage(user.team === "red" ? this.redImg : this.blueImg,
                     posX * 16, 0, 16, 16,
                     user.pos.x, user.pos.y,
                     user.size.x, user.size.y,
